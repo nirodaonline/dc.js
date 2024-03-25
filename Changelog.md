@@ -1,3 +1,7 @@
+## 5.0.0-alpha3
+* Rearrange Data Classes to better support Remote Data classes.
+* Use dimId instead of dimName for FilterStorage.
+
 ## 5.0.0-alpha2
 * Change minimum chart size from 200x200to 25x25.
 * Use dimName instead of chartID for FilterStorage.
