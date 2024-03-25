@@ -1,5 +1,5 @@
 export interface ISerializedFilters {
-    dimName: string;
+    dimId: string;
     filterType: string;
     values: any[];
     storageKey?: any;

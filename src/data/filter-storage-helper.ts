@@ -4,7 +4,7 @@ import { FilterHandler } from './filter-handler.js';
 export interface IFilterStorageConf {
     readonly filterStorage?: IFilterStorage;
     readonly chartId?: string;
-    readonly dimName?: string;
+    readonly dimId?: string;
     readonly primaryChart?: boolean;
     readonly onFiltersChanged?: (filters: any[]) => void;
 }
@@ -29,11 +29,11 @@ export class FilterStorageHelper extends FilterHandler {
     }
 
     protected _storageKey(): any {
-        return this;
+        return this.dimId;
     }
 
-    get dimName(): string {
-        return this._conf.dimName || this._conf.chartId;
+    get dimId(): string {
+        return this._conf.dimId || this._conf.chartId;
     }
 
     private _ensureListenerRegistered() {
@@ -58,7 +58,7 @@ export class FilterStorageHelper extends FilterHandler {
         this._listenerRegToken = this._conf.filterStorage.registerFilterListener({
             storageKey,
             onFiltersChanged: this._conf.onFiltersChanged,
-            dimName: this.dimName,
+            dimId: this.dimId,
             primaryChart: this._conf.primaryChart,
             applyFilters: () => this.applyFilters(),
         });

@@ -6,10 +6,10 @@ import { Dispatch, dispatch } from 'd3-dispatch';
 
 export class FilterStorage implements IFilterStorage {
     // Current filters
-    private _filters;
+    private _filters: Map<any, any>;
 
-    // List of listeners for each storage key
-    // Storage key will be dimension (id shareFilters is true) or the chart itself
+    // The list of listeners for each storage key
+    //  will be dimension (id shareFilters is true) or the chart itself
     private _listenerChains: Map<any, IFilterListenerParams[]>;
 
     // notify when filter changes for any of the charts
@@ -21,7 +21,7 @@ export class FilterStorage implements IFilterStorage {
         this._filterChangeListener = dispatch('filter-changed');
     }
 
-    public onFilterChange(key: string, callback) {
+    public onFilterChange(key: string, callback: (this: object, ...args: any[]) => void) {
         this._filterChangeListener.on(`filter-changed.${key}`, callback);
     }
 
@@ -47,7 +47,7 @@ export class FilterStorage implements IFilterStorage {
         this._listenerChains = new Map();
     }
 
-    public notifyListeners(storageKey: any, filters) {
+    public notifyListeners(storageKey: any, filters: any[]) {
         const listenerChain = this._listenerChains.get(storageKey);
         listenerChain
             .filter(l => typeof l.onFiltersChanged === 'function')
@@ -55,14 +55,14 @@ export class FilterStorage implements IFilterStorage {
                 l.onFiltersChanged(filters);
             });
 
-        const chartIds = listenerChain.map(lsnr => lsnr.dimName);
+        const chartIds = listenerChain.map(lsnr => lsnr.dimId);
         this._filterChangeListener.call('filter-changed', this, {
             chartIds,
             filters: this._filters.get(storageKey),
         });
     }
 
-    public setFiltersFor(storageKey: any, filters) {
+    public setFiltersFor(storageKey: any, filters: any[]) {
         this._filters.set(storageKey, filters);
     }
 
@@ -73,11 +73,11 @@ export class FilterStorage implements IFilterStorage {
         return this._filters.get(storageKey);
     }
 
-    public resetFiltersAndNotify(storageKey) {
+    public resetFiltersAndNotify(storageKey: any) {
         this.setFiltersAndNotify(storageKey, []);
     }
 
-    public setFiltersAndNotify(storageKey, filters) {
+    public setFiltersAndNotify(storageKey: any, filters: any[]) {
         // Update filters in the storage
         this.setFiltersFor(storageKey, filters);
 
@@ -92,7 +92,7 @@ export class FilterStorage implements IFilterStorage {
         this.notifyListeners(storageKey, filters);
     }
 
-    public deserializeFiltersSetAndNotify(storageKey, entry) {
+    public deserializeFiltersSetAndNotify(storageKey: any, entry: { filterType: any; values: any[]; }) {
         const filters = this._deSerializeFilters(entry.filterType, entry.values);
         this.setFiltersAndNotify(storageKey, filters);
     }
@@ -108,7 +108,7 @@ export class FilterStorage implements IFilterStorage {
                 if (listener) {
                     const filters = this._filters.get(listener.storageKey);
                     if (filters && filters.length > 0) {
-                        const entry = this._serializeFilters(listener.dimName, filters);
+                        const entry = this._serializeFilters(listener.dimId, filters);
                         if (includeStorageKey) {
                             entry.storageKey = listener.storageKey;
                         }
@@ -125,15 +125,15 @@ export class FilterStorage implements IFilterStorage {
 
         const filtersToRestore = new Map(
             entries.map(entry => {
-                // Find a listenerChain that has same chartId registered
-                const listenerChain = listenerChains.find((lsnrsChain: IFilterListenerParams[]) =>
-                    lsnrsChain.find(listener => listener.dimName === entry.dimName)
+                // Find a listenerChain that has the same chartId registered
+                const listenerChain = listenerChains.find((l: IFilterListenerParams[]) =>
+                    l.find(listener => listener.dimId === entry.dimId)
                 );
 
                 // convert to appropriate dc IFilter objects
                 const filters = this._deSerializeFilters(entry.filterType, entry.values);
 
-                // pickup storageKey from first entry - all entries will have same storage key
+                // pickup storageKey from first entry - all entries will have the same storage key
                 const storageKey = listenerChain[0].storageKey;
 
                 return [storageKey, filters];
@@ -150,10 +150,10 @@ export class FilterStorage implements IFilterStorage {
         }
     }
 
-    private _serializeFilters(dimName: string, filters: any[]): ISerializedFilters {
+    private _serializeFilters(dimId: string, filters: any[]): ISerializedFilters {
         if (typeof filters[0].isFiltered !== 'function') {
             return {
-                dimName,
+                dimId,
                 filterType: 'Simple',
                 values: [...filters], // defensively clone
             };
@@ -161,13 +161,13 @@ export class FilterStorage implements IFilterStorage {
 
         const filtersWithType: IFilter[] = filters;
         return {
-            dimName,
+            dimId,
             filterType: filtersWithType[0].filterType,
             values: filtersWithType.map(f => f.serialize()),
         };
     }
 
-    private _deSerializeFilters(filterType, values) {
+    private _deSerializeFilters(filterType: string, values: any[]) {
         // Simple filters are simple list of items, not need to any additional instantiation
         if (filterType === 'Simple') {
             return values;
