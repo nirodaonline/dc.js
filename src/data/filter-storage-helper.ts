@@ -1,44 +1,39 @@
-import { CFFilterHandler, ICFFilterHandlerConf } from './c-f-filter-handler.js';
-import { IFilterStorage } from '../core/i-filter-storage.js';
+import { IFilterStorage } from '../core/index.js';
+import { FilterHandler } from './filter-handler.js';
 
-export interface IFilterStorageConf extends ICFFilterHandlerConf {
+export interface IFilterStorageConf {
     readonly filterStorage?: IFilterStorage;
     readonly chartId?: string;
     readonly dimName?: string;
     readonly primaryChart?: boolean;
-    readonly shareFilters?: boolean;
-    readonly onFiltersChanged?: (filters) => void;
+    readonly onFiltersChanged?: (filters: any[]) => void;
 }
 
-export class FilterStorageHelper extends CFFilterHandler {
+export class FilterStorageHelper extends FilterHandler {
     private _listenerRegToken: any;
     protected _conf: IFilterStorageConf;
 
-    constructor(conf: IFilterStorageConf = {}) {
-        super({
-            // @ts-ignore
-            shareFilters: true,
-            ...conf,
-        });
+    constructor(conf: IFilterStorageConf) {
+        super();
+        this._conf = conf;
     }
 
     public conf(): IFilterStorageConf {
-        return super.conf();
+        return this._conf;
     }
 
     public configure(conf: IFilterStorageConf): this {
-        super.configure(conf);
-        if ('dimName' in conf) {
-            if (typeof this._conf.dimension === 'object') {
-                this._conf.dimension.name = conf.dimName;
-            }
-        }
+        this._conf = { ...this._conf, ...conf };
         this._ensureListenerRegistered();
         return this;
     }
 
+    protected _storageKey(): any {
+        return this;
+    }
+
     get dimName(): string {
-        return this._conf.dimension?.name || this._conf.chartId;
+        return this._conf.dimName || this._conf.chartId;
     }
 
     private _ensureListenerRegistered() {
@@ -46,8 +41,8 @@ export class FilterStorageHelper extends CFFilterHandler {
             return;
         }
 
-        // If it was already registered, we check if the storage ky is still same
-        // in case that has changed we need to de-register and register afresh
+        // If it was already registered, we check if the storage key is still the same
+        // in case that has changed, we need to deregister and register afresh
 
         const storageKey = this._storageKey();
 
@@ -65,7 +60,7 @@ export class FilterStorageHelper extends CFFilterHandler {
             onFiltersChanged: this._conf.onFiltersChanged,
             dimName: this.dimName,
             primaryChart: this._conf.primaryChart,
-            applyFilters: filters => this.applyFilters(),
+            applyFilters: () => this.applyFilters(),
         });
     }
 
@@ -77,14 +72,6 @@ export class FilterStorageHelper extends CFFilterHandler {
         this._listenerRegToken = undefined;
     }
 
-    private _storageKey() {
-        if (this._conf.shareFilters) {
-            return this._conf.dimension;
-        } else {
-            return this;
-        }
-    }
-
     get filters(): any[] {
         return this._conf.filterStorage.getFiltersFor(this._storageKey());
     }
@@ -93,7 +80,7 @@ export class FilterStorageHelper extends CFFilterHandler {
         this._conf.filterStorage.setFiltersFor(this._storageKey(), value);
     }
 
-    public notifyListeners(filters) {
+    public notifyListeners(filters: any[]) {
         this._conf.filterStorage.notifyListeners(this._storageKey(), filters);
     }
 

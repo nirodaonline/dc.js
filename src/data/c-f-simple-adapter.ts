@@ -1,14 +1,14 @@
 import { BaseAccessor, MinimalCFGroup, ValueAccessor } from '../core/types.js';
-import { FilterStorageHelper, IFilterStorageConf } from './filter-storage-helper.js';
+import { CFFilterHandler, ICFFilterHandlerConf } from './c-f-filter-handler.js';
 
-export interface ICFSimpleAdapterConf extends IFilterStorageConf {
+export interface ICFSimpleAdapterConf extends ICFFilterHandlerConf {
     readonly group?: MinimalCFGroup;
     readonly groupName?: string;
     readonly valueAccessor?: ValueAccessor;
     readonly ordering?: BaseAccessor<any>;
 }
 
-export class CFSimpleAdapter extends FilterStorageHelper {
+export class CFSimpleAdapter extends CFFilterHandler {
     protected _conf: ICFSimpleAdapterConf;
 
     constructor(conf: ICFSimpleAdapterConf = {}) {
