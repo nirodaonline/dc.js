@@ -35,8 +35,7 @@ export class CFMultiAdapter extends CFSimpleAdapter {
         // Two level defensive copy
         return this.layers().map(layer => {
             const valueAccessor = layer.valueAccessor || this._conf.valueAccessor;
-            // Two level defensive copy
-            const rawData = layer.group.all().map(val => ({ ...val, _value: valueAccessor(val) }));
+            const rawData = this._getData(this._conf.dimension, layer.group, valueAccessor);
 
             return { name: layer.name, rawData };
         });

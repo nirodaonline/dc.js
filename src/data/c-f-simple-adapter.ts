@@ -29,15 +29,17 @@ export class CFSimpleAdapter extends CFFilterHandler {
 
     // TODO: better typing
     public data(): any {
-        const entities = this._conf.group.all();
+        return this._getData(this._conf.dimension, this._conf.group, this._conf.valueAccessor);
+    }
 
-        // create a two level deep copy defensively
-        entities.map(val => ({ ...val }));
-
-        entities.forEach(e => {
-            e._value = this._conf.valueAccessor(e);
-        });
-
-        return entities;
+    protected _getData(
+        dimension: any,
+        group: MinimalCFGroup,
+        valueAccessor: (d: any, i?: number) => any
+    ) {
+        // create a two-level deep copy defensively
+        return this.helper
+            .getGroupings(dimension, group)
+            .map(grp => ({ ...grp, _value: valueAccessor(grp) }));
     }
 }
