@@ -1,18 +1,13 @@
-import {
-    BaseAccessor,
-    IFilterStorage,
-    MinimalCFDimension,
-    MinimalCFGroup,
-    ValueAccessor,
-} from '../core/index.js';
+import { BaseAccessor, IFilterStorage, ValueAccessor } from '../core/index.js';
 import { IDataProviderBehavior } from './i-data-provider-behavior.js';
 
+// TODO: better typing for dimension and group
 export interface ISimpleDataAdapterConf {
     readonly chartId?: string;
     readonly dimId?: string;
-    readonly dimension?: MinimalCFDimension;
+    readonly dimension?: any;
     readonly shareFilters?: boolean;
-    readonly group?: MinimalCFGroup;
+    readonly group?: any;
     readonly groupName?: string;
     readonly valueAccessor?: ValueAccessor;
     readonly ordering?: BaseAccessor<any>;
