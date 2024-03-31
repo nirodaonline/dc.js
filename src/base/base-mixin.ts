@@ -144,7 +144,6 @@ export class BaseMixin {
         this._dataProvider = dataProvider;
 
         this._dataProvider.configure({
-            chartId: this.anchorName(),
             primaryChart: !this._isChild,
             filterStorage: this.chartGroup().filterStorage,
             onFiltersChanged: filter => this._filtersChanged(filter),
