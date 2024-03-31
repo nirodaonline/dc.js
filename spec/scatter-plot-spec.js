@@ -12,9 +12,11 @@ describe('dc.scatterPlot', () => {
         appendChartID(id);
 
         chart = new dc.ScatterPlot(`#${id}`);
-        chart.dimension(dimension)
+        chart
+            .dimension(dimension)
             .group(group)
-            .width(500).height(180)
+            .width(500)
+            .height(180)
             .x(d3.scaleLinear().domain([0, 70]))
             .symbolSize(10)
             .nonemptyOpacity(0.9)
@@ -61,7 +63,17 @@ describe('dc.scatterPlot', () => {
 
         it('should generate the correct titles', () => {
             const titles = chart.selectAll('path.symbol title');
-            const expected = ['22,-2: 1', '22,10: 1', '33,1: 2', '44,-3: 1', '44,-4: 1', '44,2: 1', '55,-3: 1', '55,-5: 1', '66,-4: 1'];
+            const expected = [
+                '22,-2: 1',
+                '22,10: 1',
+                '33,1: 2',
+                '44,-3: 1',
+                '44,-4: 1',
+                '44,2: 1',
+                '55,-3: 1',
+                '55,-5: 1',
+                '66,-4: 1',
+            ];
             expect(titles.size()).toBe(expected.length);
             titles.each(function (d) {
                 expect(this.textContent).toBe(expected.shift());
@@ -80,15 +92,22 @@ describe('dc.scatterPlot', () => {
             });
         });
 
-        function fishSymbol () {
+        function fishSymbol() {
             let size;
-            const points = [[2, 0], [1, -1], [-1, 1], [-1, -1], [1, 1]];
+            const points = [
+                [2, 0],
+                [1, -1],
+                [-1, 1],
+                [-1, -1],
+                [1, 1],
+            ];
 
-            function symbol (d, i) {
+            function symbol(d, i) {
                 // native size is 3 square pixels, so to get size N, multiply by sqrt(N)/3
                 let m = size.call(this, d, i);
                 m = Math.sqrt(m) / 3;
-                const path = d3.line()
+                const path = d3
+                    .line()
                     .x(_d => _d[0] * m)
                     .y(_d => _d[1] * m);
                 return `${path(points)}Z`;
@@ -112,12 +131,13 @@ describe('dc.scatterPlot', () => {
 
         describe('with a fish symbol', () => {
             beforeEach(() => {
-                chart.customSymbol(fishSymbol().size(chart.symbolSize()))
-                    .render();
+                chart.customSymbol(fishSymbol().size(chart.symbolSize())).render();
             });
 
             it('should draw fishes', () => {
-                expect(symbolsMatching(matchSymbol(fishSymbol(), chart.symbolSize())).length).toBe(9);
+                expect(symbolsMatching(matchSymbol(fishSymbol(), chart.symbolSize())).length).toBe(
+                    9
+                );
             });
         });
 
@@ -138,7 +158,10 @@ describe('dc.scatterPlot', () => {
                 otherDimension = data.dimension(d => [+d.value, +d.nvalue]);
 
                 chart.filterAll();
-                chart.filter([[22, -3], [44, 2]]);
+                chart.filter([
+                    [22, -3],
+                    [44, 2],
+                ]);
             });
 
             it('should filter dimensions based on the same data', () => {
@@ -153,17 +176,19 @@ describe('dc.scatterPlot', () => {
                 it('should remove all filtering from the dimensions based on the same data', () => {
                     expect(otherDimension.top(Infinity).length).toBe(10);
                 });
-
             });
         });
 
-        function filteringAnotherDimension () {
+        function filteringAnotherDimension() {
             describe('filtering another dimension', () => {
                 let otherDimension;
 
                 beforeEach(() => {
                     otherDimension = data.dimension(d => [+d.value, +d.nvalue]);
-                    const filter = dc.filters.RangedTwoDimensionalFilter([[22, -3], [44, 2]]);
+                    const filter = dc.filters.RangedTwoDimensionalFilter([
+                        [22, -3],
+                        [44, 2],
+                    ]);
                     otherDimension.filterFunction(v => filter.isFiltered(v));
                     chart.redraw();
                 });
@@ -185,15 +210,25 @@ describe('dc.scatterPlot', () => {
                     expect(translucentPoints.length).toBe(7);
                 });
                 it('should use emptyColor for excluded points', () => {
-                    const chartreusePoints = symbolsMatching(function () { // don't try this at home
+                    const chartreusePoints = symbolsMatching(function () {
+                        // don't try this at home
                         return /#DFFF00/i.test(d3.select(this).attr('fill')); // emptyColor
                     });
                     expect(chartreusePoints.length).toBe(7);
                 });
                 it('should update the titles', () => {
                     const titles = chart.selectAll('path.symbol title');
-                    const expected =
-                        ['22,-2: 1', '22,10: 0', '33,1: 2', '44,-3: 0', '44,-4: 0', '44,2: 0', '55,-3: 0', '55,-5: 0', '66,-4: 0'];
+                    const expected = [
+                        '22,-2: 1',
+                        '22,10: 0',
+                        '33,1: 2',
+                        '44,-3: 0',
+                        '44,-4: 0',
+                        '44,2: 0',
+                        '55,-3: 0',
+                        '55,-5: 0',
+                        '66,-4: 0',
+                    ];
                     expect(titles.size()).toBe(expected.length);
                     titles.each(function (d) {
                         expect(this.textContent).toBe(expected.shift());
@@ -204,42 +239,43 @@ describe('dc.scatterPlot', () => {
 
         filteringAnotherDimension();
 
-        function cloneGroup (grp) {
+        function cloneGroup(grp) {
             return {
                 all: function () {
                     return grp.all().map(kv => ({
                         key: kv.key.slice(0),
-                        value: kv.value
+                        value: kv.value,
                     }));
-                }
+                },
             };
         }
 
         describe('with cloned data', () => {
             beforeEach(() => {
-                chart.group(cloneGroup(group))
-                    .render();
+                chart.group(cloneGroup(group)).render();
             });
 
             filteringAnotherDimension();
         });
 
-        function removeEmptyBins (sourceGroup) {
+        function removeEmptyBins(sourceGroup) {
             return {
                 all: function () {
                     //return Math.abs(d.value) > 0.00001; // if using floating-point numbers
                     return sourceGroup.all().filter(d => d.value !== 0); // if integers only
-                }
+                },
             };
         }
 
         describe('with empty bins removed', () => {
             let otherDimension;
             beforeEach(() => {
-                chart.group(removeEmptyBins(group))
-                    .render();
+                chart.group(removeEmptyBins(group)).render();
                 otherDimension = data.dimension(d => [+d.value, +d.nvalue]);
-                const filter = dc.filters.RangedTwoDimensionalFilter([[22, -3], [44, 2]]);
+                const filter = dc.filters.RangedTwoDimensionalFilter([
+                    [22, -3],
+                    [44, 2],
+                ]);
                 otherDimension.filterFunction(v => filter.isFiltered(v));
                 chart.redraw();
             });
@@ -270,7 +306,10 @@ describe('dc.scatterPlot', () => {
             beforeEach(() => {
                 otherDimension = data.dimension(d => [+d.value, +d.nvalue]);
 
-                simulateChart2DBrushing(chart, [[22, -3], [44, 2]]);
+                simulateChart2DBrushing(chart, [
+                    [22, -3],
+                    [44, 2],
+                ]);
 
                 chart.redraw();
             });
@@ -358,7 +397,10 @@ describe('dc.scatterPlot', () => {
                 });
 
                 it('should restore sizes, colors, and opacity when the brush is empty', () => {
-                    simulateChart2DBrushing(chart, [[22, 2], [22, -3]]);
+                    simulateChart2DBrushing(chart, [
+                        [22, 2],
+                        [22, -3],
+                    ]);
 
                     jasmine.clock().tick(100);
 
@@ -386,7 +428,7 @@ describe('dc.scatterPlot', () => {
         });
     });
 
-    function matchSymbolSize (r) {
+    function matchSymbolSize(r) {
         return function () {
             const symbol = d3.select(this);
             const size = Math.pow(r, 2);
@@ -396,7 +438,7 @@ describe('dc.scatterPlot', () => {
         };
     }
 
-    function matchSymbol (s, r) {
+    function matchSymbol(s, r) {
         return function () {
             const symbol = d3.select(this);
             const size = Math.pow(r, 2);
@@ -406,15 +448,15 @@ describe('dc.scatterPlot', () => {
         };
     }
 
-    function symbolsMatching (pred) {
-        function getData (symbols) {
+    function symbolsMatching(pred) {
+        function getData(symbols) {
             return symbols.nodes().map(symbol => d3.select(symbol).datum());
         }
 
         return getData(chart.selectAll('path.symbol').filter(pred));
     }
 
-    function symbolsOfRadius (r) {
+    function symbolsOfRadius(r) {
         return symbolsMatching(matchSymbolSize(r));
     }
 
@@ -434,17 +476,22 @@ describe('dc.scatterPlot', () => {
                 .transitionDuration(0)
                 .legend(new dc.Legend())
                 .compose([
-                    subChart1 = new dc.ScatterPlot(compositeChart).colors('red').group(group, 'Scatter 1'),
-                    subChart2 = new dc.ScatterPlot(compositeChart).colors('blue').group(group, 'Scatter 2')
-                ]).render();
+                    (subChart1 = new dc.ScatterPlot(compositeChart)
+                        .colors('red')
+                        .group(group, 'Scatter 1')),
+                    (subChart2 = new dc.ScatterPlot(compositeChart)
+                        .colors('blue')
+                        .group(group, 'Scatter 2')),
+                ])
+                .render();
 
             firstItem = compositeChart.select('g.dc-legend g.dc-legend-item');
         });
 
         it('should provide a composite chart with corresponding legend data', () => {
             expect(compositeChart.legendables()).toEqual([
-                {chart: subChart1, name: 'Scatter 1', color: 'red'},
-                {chart: subChart2, name: 'Scatter 2', color: 'blue'}
+                { chart: subChart1, name: 'Scatter 1', color: 'red' },
+                { chart: subChart2, name: 'Scatter 2', color: 'blue' },
             ]);
         });
 
@@ -456,7 +503,6 @@ describe('dc.scatterPlot', () => {
             describe('when a legend item is hovered over', () => {
                 it('should highlight corresponding plot', () => {
                     nthChart(0).expectPlotSymbolsToHaveSize(subChart1.highlightedSize());
-
                 });
 
                 it('should fade out non-corresponding lines and areas', () => {
@@ -479,7 +525,7 @@ describe('dc.scatterPlot', () => {
             });
         });
 
-        function nthChart (n) {
+        function nthChart(n) {
             const subChart = d3.select(compositeChart.selectAll('g.sub').nodes()[n]);
 
             subChart.expectPlotSymbolsToHaveClass = function (className) {
@@ -509,12 +555,17 @@ describe('dc.scatterPlot', () => {
             dimension = data.dimension(d => [d.state, d.region]);
             group = dimension.group();
             chart
-                .margins({left: 50, top: 10, right: 0, bottom: 20})
+                .margins({ left: 50, top: 10, right: 0, bottom: 20 })
                 .dimension(dimension)
                 .group(group)
                 .x(d3.scaleBand())
                 // ordinal axes work but you have to set the padding for both axes & give the y domain
-                .y(d3.scaleBand().paddingInner(1).domain(group.all().map(kv => kv.key[1])))
+                .y(
+                    d3
+                        .scaleBand()
+                        .paddingInner(1)
+                        .domain(group.all().map(kv => kv.key[1]))
+                )
                 .xUnits(dc.units.ordinal)
                 ._rangeBandPadding(1)
                 .render();
@@ -526,10 +577,7 @@ describe('dc.scatterPlot', () => {
         });
         describe('with grid lines', () => {
             beforeEach(() => {
-                chart
-                    .renderHorizontalGridLines(true)
-                    .renderVerticalGridLines(true)
-                    .render();
+                chart.renderHorizontalGridLines(true).renderVerticalGridLines(true).render();
             });
             it('should draw the correct number of grid lines', () => {
                 expect(chart.selectAll('.grid-line.horizontal line').size()).toBe(5);
@@ -538,8 +586,7 @@ describe('dc.scatterPlot', () => {
         });
     });
 
-    function nthSymbol (i) {
+    function nthSymbol(i) {
         return d3.select(chart.selectAll('path.symbol').nodes()[i]);
     }
 });
-

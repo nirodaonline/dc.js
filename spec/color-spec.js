@@ -5,7 +5,9 @@ describe('dc.colorMixin', () => {
         return (test || domain).map((d, i) => chart.colorHelper().getColor(d, i));
     }
 
-    function identity (d) { return d; }
+    function identity(d) {
+        return d;
+    }
 
     function instantiateColorMixin() {
         const ColorMixinTester = dc.ColorMixin(dc.BaseMixin);
@@ -44,32 +46,49 @@ describe('dc.colorMixin', () => {
         beforeEach(() => {
             chart = instantiateColorMixin();
             chart.colorAccessor(identity);
-            domain = ['a','b','c','d','e'];
+            domain = ['a', 'b', 'c', 'd', 'e'];
         });
 
         it('default', () => {
-            expect(colorTest(chart, domain))
-                .toMatchColors(dc.config.defaultColors().slice(0, 5));
+            expect(colorTest(chart, domain)).toMatchColors(dc.config.defaultColors().slice(0, 5));
         });
 
         it('custom', () => {
             chart.colors(d3.scaleOrdinal(d3.schemeCategory10));
-            expect(colorTest(chart, domain)).toMatchColors(['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd']);
+            expect(colorTest(chart, domain)).toMatchColors([
+                '#1f77b4',
+                '#ff7f0e',
+                '#2ca02c',
+                '#d62728',
+                '#9467bd',
+            ]);
         });
 
         it('ordinal', () => {
-            chart.ordinalColors(['red','green','blue']);
-            expect(colorTest(chart, domain)).toMatchColors(['red','green','blue','red','green']);
+            chart.ordinalColors(['red', 'green', 'blue']);
+            expect(colorTest(chart, domain)).toMatchColors([
+                'red',
+                'green',
+                'blue',
+                'red',
+                'green',
+            ]);
         });
 
         it('linear', () => {
             // GIGO: mapping ordinal domain to linear scale is nonsensical
             // d3 pre-5.8: scaled to NaN and corrected to black; 5.8+: scale returns undefined
-            chart.linearColors(['#ff0000','#00ff00']);
-            expect(colorTest(chart, domain)).toEqual([undefined, undefined, undefined, undefined, undefined]);
+            chart.linearColors(['#ff0000', '#00ff00']);
+            expect(colorTest(chart, domain)).toEqual([
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+            ]);
         });
     });
-    describe('with numeric domain' , () => {
+    describe('with numeric domain', () => {
         // These tests try to validate an interesting case. In an Ordinal scale if we try to map a key
         // that is not there, it is added to the domain.
         // Please see https://github.com/d3/d3-scale/blob/master/README.md#_ordinal
@@ -105,20 +124,33 @@ describe('dc.colorMixin', () => {
         });
 
         it('ordinal', () => {
-            chart.ordinalColors(['red','green','blue']);
+            chart.ordinalColors(['red', 'green', 'blue']);
             // If there are lesser number of colors in range than the number of domain items, it starts reusing
-            expect(colorTest(chart, domain, test)).toMatchColors(['blue', 'red', 'red', 'green', 'green', 'red']);
+            expect(colorTest(chart, domain, test)).toMatchColors([
+                'blue',
+                'red',
+                'red',
+                'green',
+                'green',
+                'red',
+            ]);
         });
 
         it('linear', () => {
             // interpolateHcl (note the adjustment for one changed value for d3 5.1)
-            chart.linearColors(['#4575b4','#ffffbf']);
+            chart.linearColors(['#4575b4', '#ffffbf']);
 
-            expect(colorTest(chart, domain, test))
-                .toMatchColors(['#4773b3', '#4575b4', '#58C6BA', '#ffffbf', '#ffffc0', '#4575b4']);
+            expect(colorTest(chart, domain, test)).toMatchColors([
+                '#4773b3',
+                '#4575b4',
+                '#58C6BA',
+                '#ffffbf',
+                '#ffffc0',
+                '#4575b4',
+            ]);
         });
     });
-    describe('calculateColorDomain' , () => {
+    describe('calculateColorDomain', () => {
         let chart;
 
         beforeEach(() => {
@@ -132,8 +164,7 @@ describe('dc.colorMixin', () => {
 
         it('check domain', () => {
             chart.calculateColorDomain();
-            expect(chart.colorDomain()).toEqual([1,3]);
+            expect(chart.colorDomain()).toEqual([1, 3]);
         });
     });
 });
-

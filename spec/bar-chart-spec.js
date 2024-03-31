@@ -12,8 +12,11 @@ describe('dc.BarChart', () => {
         appendChartID(id);
 
         chart = new dc.BarChart(`#${id}`);
-        chart.dimension(dimension).group(group)
-            .width(1100).height(200)
+        chart
+            .dimension(dimension)
+            .group(group)
+            .width(1100)
+            .height(200)
             .x(d3.scaleUtc().domain([makeDate(2012, 0, 1), makeDate(2012, 11, 31)]))
             .transitionDuration(0)
             .controlsUseVisibility(true);
@@ -123,12 +126,14 @@ describe('dc.BarChart', () => {
 
                 const domain = [makeDate(2012, 4, 20), makeDate(2012, 7, 15)];
 
-                chart.x(d3.scaleUtc().domain(domain))
+                chart
+                    .x(d3.scaleUtc().domain(domain))
                     .group(dimension.group().reduceSum(d => +d.nvalue))
                     .elasticY(true)
                     .centerBar(false)
                     .xUnits(d3.utcDays)
-                    .yAxis().ticks(5);
+                    .yAxis()
+                    .ticks(5);
 
                 chart.render();
             });
@@ -142,7 +147,7 @@ describe('dc.BarChart', () => {
                     expect(bar.attr('width')).toBe('9');
                 });
             });
-            function nthYAxisText (n) {
+            function nthYAxisText(n) {
                 return d3.select(chart.selectAll('g.y text').nodes()[n]);
             }
             it('should generate bars with positions corresponding to their data', () => {
@@ -164,7 +169,6 @@ describe('dc.BarChart', () => {
                 expect(nthYAxisText(1).text()).toMatch(/−5/);
                 expect(nthYAxisText(2).text()).toBe('0');
             });
-
         });
 
         describe('with an ordinal x domain', () => {
@@ -173,11 +177,19 @@ describe('dc.BarChart', () => {
             beforeEach(() => {
                 stateDimension = data.dimension(d => d.state);
                 const stateGroup = stateDimension.group();
-                const ordinalDomainValues = ['California', 'Colorado', 'Delaware', 'Ontario', 'Mississippi', 'Oklahoma'];
+                const ordinalDomainValues = [
+                    'California',
+                    'Colorado',
+                    'Delaware',
+                    'Ontario',
+                    'Mississippi',
+                    'Oklahoma',
+                ];
 
                 chart.rescale(); // BUG: barWidth cannot change after initial rendering
 
-                chart.dimension(stateDimension)
+                chart
+                    .dimension(stateDimension)
                     .group(stateGroup)
                     .xUnits(dc.units.ordinal)
                     .x(d3.scaleBand().domain(ordinalDomainValues))
@@ -241,7 +253,14 @@ describe('dc.BarChart', () => {
 
                 it('should use alphabetical ordering', () => {
                     const data02 = chart.selectAll('rect.bar').data();
-                    const expectedData = ['California', 'Colorado', 'Delaware', 'Mississippi', 'Oklahoma', 'Ontario'];
+                    const expectedData = [
+                        'California',
+                        'Colorado',
+                        'Delaware',
+                        'Mississippi',
+                        'Oklahoma',
+                        'Ontario',
+                    ];
 
                     expect(data02.map(datum => datum.x)).toEqual(expectedData);
 
@@ -299,11 +318,19 @@ describe('dc.BarChart', () => {
 
                 stateDimension = data.dimension(d => d.state);
                 const stateGroup = stateDimension.group();
-                const ordinalDomainValues = ['California', 'Colorado', 'Delaware', 'Ontario', 'Mississippi', 'Oklahoma'];
+                const ordinalDomainValues = [
+                    'California',
+                    'Colorado',
+                    'Delaware',
+                    'Ontario',
+                    'Mississippi',
+                    'Oklahoma',
+                ];
 
                 chart.rescale(); // BUG: barWidth cannot change after initial rendering
 
-                chart.dimension(stateDimension)
+                chart
+                    .dimension(stateDimension)
                     .group(stateGroup)
                     .xUnits(dc.units.ordinal)
                     .x(d3.scaleOrdinal().domain(ordinalDomainValues))
@@ -329,7 +356,8 @@ describe('dc.BarChart', () => {
 
                 chart.rescale(); // BUG: barWidth cannot change after initial rendering
 
-                chart.dimension(linearDimension)
+                chart
+                    .dimension(linearDimension)
                     .group(linearGroup)
                     .xUnits(dc.units.integers)
                     .x(d3.scaleLinear().domain([20, 70]))
@@ -354,7 +382,8 @@ describe('dc.BarChart', () => {
 
             describe('with a custom click handler', () => {
                 beforeEach(() => {
-                    chart.brushOn(false)
+                    chart
+                        .brushOn(false)
                         .on('renderlet', _chart => {
                             _chart.selectAll('rect.bar').on('click', (evt, d) => _chart.onClick(d));
                         })
@@ -424,9 +453,9 @@ describe('dc.BarChart', () => {
                 });
 
                 it('should have its own title accessor', () => {
-                    expect(chart.title()({value: 1})).toBe('stack 0: 1');
-                    expect(chart.title('stack 0')({value: 2})).toBe('stack 0: 2');
-                    expect(chart.title('stack 1')({value: 3})).toBe('stack 1: 3');
+                    expect(chart.title()({ value: 1 })).toBe('stack 0: 1');
+                    expect(chart.title('stack 0')({ value: 2 })).toBe('stack 0: 2');
+                    expect(chart.title('stack 1')({ value: 3 })).toBe('stack 1: 3');
                 });
 
                 it('should have titles rendered for extra stacks', () => {
@@ -502,14 +531,17 @@ describe('dc.BarChart', () => {
 
                         it('should still show the title for a visible stack', () => {
                             nthStack(1).forEachBar((bar, datum) => {
-                                expect(bar.select('title').text()).toBe(`stack 2: ${datum.data.value}`);
+                                expect(bar.select('title').text()).toBe(
+                                    `stack 2: ${datum.data.value}`
+                                );
                             });
                         });
                     });
 
                     describe('hiding all the stacks', () => {
                         beforeEach(() => {
-                            chart.hideStack('stack 0')
+                            chart
+                                .hideStack('stack 0')
                                 .hideStack('stack 1')
                                 .hideStack('stack 2')
                                 .render();
@@ -529,11 +561,13 @@ describe('dc.BarChart', () => {
                     chart.group(mixedGroup).stack(mixedGroup).stack(mixedGroup);
                     chart.x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
 
-                    chart.margins({top: 30, right: 50, bottom: 30, left: 30})
+                    chart
+                        .margins({ top: 30, right: 50, bottom: 30, left: 30 })
                         .yAxisPadding(5)
                         .elasticY(true)
                         .xUnits(d3.utcDays)
-                        .yAxis().ticks(5);
+                        .yAxis()
+                        .ticks(5);
 
                     chart.rescale(); // BUG: barWidth cannot change after initial rendering
 
@@ -596,10 +630,12 @@ describe('dc.BarChart', () => {
                     chart.group(negativeGroup).stack(negativeGroup).stack(negativeGroup);
                     chart.x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
 
-                    chart.margins({top: 30, right: 50, bottom: 30, left: 30})
+                    chart
+                        .margins({ top: 30, right: 50, bottom: 30, left: 30 })
                         .elasticY(true)
                         .xUnits(d3.utcDays)
-                        .yAxis().ticks(3);
+                        .yAxis()
+                        .ticks(3);
 
                     chart.render();
                 });
@@ -666,15 +702,18 @@ describe('dc.BarChart', () => {
                 itBehavesLikeItWasReset();
             });
 
-            function itBehavesLikeItWasReset () {
+            function itBehavesLikeItWasReset() {
                 expect(chart.refocused()).toBeFalsy();
                 expect(chart.x().domain()).toEqual([makeDate(2012, 0, 1), makeDate(2012, 11, 31)]);
 
                 expect(xAxisText().slice(0, 4)).toEqual(['2012', 'February', 'March', 'April']);
             }
 
-            function xAxisText () {
-                return chart.selectAll('g.x text').nodes().map(x => d3.select(x).text());
+            function xAxisText() {
+                return chart
+                    .selectAll('g.x text')
+                    .nodes()
+                    .map(x => d3.select(x).text());
             }
         });
 
@@ -682,7 +721,8 @@ describe('dc.BarChart', () => {
             let firstItem;
 
             beforeEach(() => {
-                chart.stack(group)
+                chart
+                    .stack(group)
                     .legend(new dc.Legend().x(400).y(10).itemHeight(13).gap(5))
                     .render();
 
@@ -723,8 +763,14 @@ describe('dc.BarChart', () => {
 
         describe('filtering', () => {
             beforeEach(() => {
-                d3.select(`#${id}`).append('span').attr('class', 'filter').style('visibility', 'hidden');
-                d3.select(`#${id}`).append('a').attr('class', 'reset').style('visibility', 'hidden');
+                d3.select(`#${id}`)
+                    .append('span')
+                    .attr('class', 'filter')
+                    .style('visibility', 'hidden');
+                d3.select(`#${id}`)
+                    .append('a')
+                    .attr('class', 'reset')
+                    .style('visibility', 'hidden');
                 chart.filter([makeDate(2012, 5, 1), makeDate(2012, 5, 30)]).redraw();
                 dc.config.dateFormat = d3.utcFormat('%m/%d/%Y');
                 chart.redraw();
@@ -752,7 +798,10 @@ describe('dc.BarChart', () => {
 
             describe('when a brush is defined', () => {
                 it('should position the brush with an offset', () => {
-                    expect(chart.select('g.brush').attr('transform')).toMatchTranslate(chart.margins().left, 10);
+                    expect(chart.select('g.brush').attr('transform')).toMatchTranslate(
+                        chart.margins().left,
+                        10
+                    );
                 });
 
                 it('should create a fancy brush resize handle', () => {
@@ -760,11 +809,13 @@ describe('dc.BarChart', () => {
                     expect(selectAll.size()).toBe(2);
                     selectAll.each(function (d, i) {
                         if (i === 0) {
-                            expect(d3.select(this).attr('d'))
-                                .toMatchPath('M-0.5,53 A6,6 0 0 0 -6.5,59 V100 A6,6 0 0 0 -0.5,106 ZM-2.5,61 V98 M-4.5,61 V98');
+                            expect(d3.select(this).attr('d')).toMatchPath(
+                                'M-0.5,53 A6,6 0 0 0 -6.5,59 V100 A6,6 0 0 0 -0.5,106 ZM-2.5,61 V98 M-4.5,61 V98'
+                            );
                         } else {
-                            expect(d3.select(this).attr('d'))
-                                .toMatchPath('M0.5,53 A6,6 0 0 1 6.5,59 V100 A6,6 0 0 1 0.5,106 ZM2.5,61 V98 M4.5,61 V98');
+                            expect(d3.select(this).attr('d')).toMatchPath(
+                                'M0.5,53 A6,6 0 0 1 6.5,59 V100 A6,6 0 0 1 0.5,106 ZM2.5,61 V98 M4.5,61 V98'
+                            );
                         }
                     });
                 });
@@ -782,7 +833,10 @@ describe('dc.BarChart', () => {
                 });
 
                 it('should set extent width based on filter set', () => {
-                    expect(chart.select('g.brush rect.selection').attr('width')).toBeWithinDelta(81, 1);
+                    expect(chart.select('g.brush rect.selection').attr('width')).toBeWithinDelta(
+                        81,
+                        1
+                    );
                 });
 
                 it('should push unselected bars to the background', () => {
@@ -872,14 +926,15 @@ describe('dc.BarChart', () => {
     describe('with another ordinal domain', () => {
         beforeEach(() => {
             const rows = [];
-            rows.push({State: 'CA', 'Population': 2704659});
-            rows.push({State: 'TX', 'Population': 1827307});
+            rows.push({ State: 'CA', Population: 2704659 });
+            rows.push({ State: 'TX', Population: 1827307 });
             data = crossfilter(rows);
-            dimension  = data.dimension(dc.pluck('State'));
+            dimension = data.dimension(dc.pluck('State'));
             group = dimension.group().reduceSum(dc.pluck('Population'));
 
             chart = new dc.BarChart(`#${id}`);
-            chart.xUnits(dc.units.ordinal)
+            chart
+                .xUnits(dc.units.ordinal)
                 .x(d3.scaleBand())
                 .transitionDuration(0)
                 .dimension(dimension)
@@ -887,44 +942,56 @@ describe('dc.BarChart', () => {
             chart.render();
         });
         it('should not overlap bars', () => {
-            const x = numAttr('x'), wid = numAttr('width');
-            expect(x(nthStack(0).nthBar(0)) + wid(nthStack(0).nthBar(0)))
-                .toBeLessThan(x(nthStack(0).nthBar(1)));
+            const x = numAttr('x'),
+                wid = numAttr('width');
+            expect(x(nthStack(0).nthBar(0)) + wid(nthStack(0).nthBar(0))).toBeLessThan(
+                x(nthStack(0).nthBar(1))
+            );
         });
     });
 
     describe('with yetnother ordinal domain', () => {
         beforeEach(() => {
-            const rows = [{
-                name: 'Venezuela',
-                sale: 300
-            }, {
-                name: 'Saudi',
-                sale: 253
-            }, {
-                name: 'Canada',
-                sale: 150
-            }, {
-                name: 'Iran',
-                sale: 125
-            }, {
-                name: 'Russia',
-                sale: 110
-            }, {
-                name: 'UAE',
-                sale: 90
-            }, {
-                name: 'US',
-                sale: 40
-            }, {
-                name: 'China',
-                sale: 37
-            }];
+            const rows = [
+                {
+                    name: 'Venezuela',
+                    sale: 300,
+                },
+                {
+                    name: 'Saudi',
+                    sale: 253,
+                },
+                {
+                    name: 'Canada',
+                    sale: 150,
+                },
+                {
+                    name: 'Iran',
+                    sale: 125,
+                },
+                {
+                    name: 'Russia',
+                    sale: 110,
+                },
+                {
+                    name: 'UAE',
+                    sale: 90,
+                },
+                {
+                    name: 'US',
+                    sale: 40,
+                },
+                {
+                    name: 'China',
+                    sale: 37,
+                },
+            ];
             data = crossfilter(rows);
-            dimension  = data.dimension(d => d.name);
+            dimension = data.dimension(d => d.name);
             group = dimension.group().reduceSum(d => d.sale);
             chart = new dc.BarChart(`#${id}`);
-            chart.transitionDuration(0)
+            chart
+                .transitionDuration(0)
                 .outerPadding(0)
                 .dimension(dimension)
                 .group(group)
@@ -942,10 +1009,10 @@ describe('dc.BarChart', () => {
     describe('with changing number of bars', () => {
         beforeEach(() => {
             const rows1 = [
-                {x: 1, y: 3},
-                {x: 2, y: 9},
-                {x: 5, y: 10},
-                {x: 6, y: 7}
+                { x: 1, y: 3 },
+                { x: 2, y: 9 },
+                { x: 5, y: 10 },
+                { x: 6, y: 7 },
             ];
 
             data = crossfilter(rows1);
@@ -953,8 +1020,10 @@ describe('dc.BarChart', () => {
             group = dimension.group().reduceSum(d => d.y);
 
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500).transitionDuration(0)
-                .x(d3.scaleLinear().domain([0,7]))
+            chart
+                .width(500)
+                .transitionDuration(0)
+                .x(d3.scaleLinear().domain([0, 7]))
                 .elasticY(true)
                 .dimension(dimension)
                 .group(group);
@@ -968,12 +1037,12 @@ describe('dc.BarChart', () => {
         describe('with bars added', () => {
             beforeEach(() => {
                 const rows2 = [
-                    {x: 7, y: 4},
-                    {x: 12, y: 9}
+                    { x: 7, y: 4 },
+                    { x: 12, y: 9 },
                 ];
 
                 data.add(rows2);
-                chart.x().domain([0,13]);
+                chart.x().domain([0, 13]);
                 chart.render();
             });
             it('should not overlap bars', () => {
@@ -986,17 +1055,17 @@ describe('dc.BarChart', () => {
     describe('with elasticX and x-axis padding', () => {
         const date = makeDate(2012, 5, 1);
         beforeEach(() => {
-            const rows = [
-                {x: date, y: 4},
-            ];
+            const rows = [{ x: date, y: 4 }];
             data = crossfilter(rows);
             dimension = data.dimension(d => d.x);
             group = dimension.group().reduceSum(d => d.y);
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500)
+            chart
+                .width(500)
                 .transitionDuration(0)
                 .x(d3.scaleUtc())
-                .elasticY(true).elasticX(true)
+                .elasticY(true)
+                .elasticX(true)
                 .dimension(dimension)
                 .group(group);
             chart.render();
@@ -1008,17 +1077,14 @@ describe('dc.BarChart', () => {
             expect(chart.xAxisMax()).toEqual(date);
         });
         it('should render the right xAxisMax/Min when 10 day padding', () => {
-            chart.xAxisPadding(10)
-                .render();
+            chart.xAxisPadding(10).render();
             const expectedStartDate = d3.utcDay.offset(date, -10);
             const expectedEndDate = d3.utcDay.offset(date, 10);
             expect(chart.xAxisMin()).toEqual(expectedStartDate);
             expect(chart.xAxisMax()).toEqual(expectedEndDate);
         });
         it('should render the right xAxisMax/Min when 2 month padding', () => {
-            chart.xAxisPaddingUnit('month')
-                .xAxisPadding(2)
-                .render();
+            chart.xAxisPaddingUnit('month').xAxisPadding(2).render();
             const expectedStartDate = d3.utcMonth.offset(date, -2);
             const expectedEndDate = d3.utcMonth.offset(date, 2);
             expect(chart.xAxisMin()).toEqual(expectedStartDate);
@@ -1028,10 +1094,10 @@ describe('dc.BarChart', () => {
     describe('with changing number of bars and elasticX', () => {
         beforeEach(() => {
             const rows1 = [
-                {x: 1, y: 3},
-                {x: 2, y: 9},
-                {x: 5, y: 10},
-                {x: 6, y: 7}
+                { x: 1, y: 3 },
+                { x: 2, y: 9 },
+                { x: 5, y: 10 },
+                { x: 6, y: 7 },
             ];
 
             data = crossfilter(rows1);
@@ -1039,9 +1105,12 @@ describe('dc.BarChart', () => {
             group = dimension.group().reduceSum(d => d.y);
 
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500).transitionDuration(0)
+            chart
+                .width(500)
+                .transitionDuration(0)
                 .x(d3.scaleLinear())
-                .elasticY(true).elasticX(true)
+                .elasticY(true)
+                .elasticX(true)
                 .dimension(dimension)
                 .group(group);
             chart.render();
@@ -1054,8 +1123,8 @@ describe('dc.BarChart', () => {
         describe('with bars added', () => {
             beforeEach(() => {
                 const rows2 = [
-                    {x: 7, y: 4},
-                    {x: 12, y: 9}
+                    { x: 7, y: 4 },
+                    { x: 12, y: 9 },
                 ];
 
                 data.add(rows2);
@@ -1072,10 +1141,10 @@ describe('dc.BarChart', () => {
     describe('with changing number of ordinal bars and elasticX', () => {
         beforeEach(() => {
             const rows1 = [
-                {x: 'a', y: 3},
-                {x: 'b', y: 9},
-                {x: 'e', y: 10},
-                {x: 'f', y: 7}
+                { x: 'a', y: 3 },
+                { x: 'b', y: 9 },
+                { x: 'e', y: 10 },
+                { x: 'f', y: 7 },
             ];
 
             data = crossfilter(rows1);
@@ -1083,10 +1152,13 @@ describe('dc.BarChart', () => {
             group = dimension.group().reduceSum(d => d.y);
 
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500).transitionDuration(0)
+            chart
+                .width(500)
+                .transitionDuration(0)
                 .x(d3.scaleBand())
                 .xUnits(dc.units.ordinal)
-                .elasticY(true).elasticX(true)
+                .elasticY(true)
+                .elasticX(true)
                 .dimension(dimension)
                 .group(group);
             chart.render();
@@ -1099,8 +1171,8 @@ describe('dc.BarChart', () => {
         describe('with bars added', () => {
             beforeEach(() => {
                 const rows2 = [
-                    {x: 'g', y: 4},
-                    {x: 'l', y: 9}
+                    { x: 'g', y: 4 },
+                    { x: 'l', y: 9 },
                 ];
 
                 data.add(rows2);
@@ -1116,10 +1188,7 @@ describe('dc.BarChart', () => {
 
     describe('brushing with bars centered and rounding enabled', () => {
         beforeEach(() => {
-            chart
-                .brushOn(true)
-                .round(d3.utcMonth.round)
-                .centerBar(true);
+            chart.brushOn(true).round(d3.utcMonth.round).centerBar(true);
         });
 
         describe('with alwaysUseRounding disabled', () => {
@@ -1134,7 +1203,9 @@ describe('dc.BarChart', () => {
             });
 
             it('should log a warning indicating that brush rounding was disabled', () => {
-                expect(consoleWarnSpy.calls.mostRecent().args[0]).toMatch(/brush rounding is disabled/);
+                expect(consoleWarnSpy.calls.mostRecent().args[0]).toMatch(
+                    /brush rounding is disabled/
+                );
             });
 
             it('should not round the brush', () => {
@@ -1163,10 +1234,10 @@ describe('dc.BarChart', () => {
     describe('check ordering option of the x axis', () => {
         beforeEach(() => {
             const rows = [
-                {x: 'a', y: 1},
-                {x: 'b', y: 3},
-                {x: 'd', y: 4},
-                {x: 'c', y: 2}
+                { x: 'a', y: 1 },
+                { x: 'b', y: 3 },
+                { x: 'd', y: 4 },
+                { x: 'c', y: 2 },
             ];
 
             id = 'bar-chart';
@@ -1176,10 +1247,13 @@ describe('dc.BarChart', () => {
             group = dimension.group().reduceSum(d => d.y);
 
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500).transitionDuration(0)
+            chart
+                .width(500)
+                .transitionDuration(0)
                 .x(d3.scaleBand())
                 .xUnits(dc.units.ordinal)
-                .elasticY(true).elasticX(true)
+                .elasticY(true)
+                .elasticX(true)
                 .dimension(dimension)
                 .group(group);
             chart.render();
@@ -1204,9 +1278,9 @@ describe('dc.BarChart', () => {
         });
 
         it('should be ordered by alphabetical order', () => {
-            function reverseGroup (_group) {
+            function reverseGroup(_group) {
                 return {
-                    all: () => Array.from(_group.all()).reverse()
+                    all: () => Array.from(_group.all()).reverse(),
                 };
             }
             chart.group(reverseGroup(group));
@@ -1215,18 +1289,21 @@ describe('dc.BarChart', () => {
             expect(xAxisText()).toEqual(['a', 'b', 'c', 'd']);
         });
 
-        function xAxisText () {
-            return chart.selectAll('g.x text').nodes().map(x => d3.select(x).text());
+        function xAxisText() {
+            return chart
+                .selectAll('g.x text')
+                .nodes()
+                .map(x => d3.select(x).text());
         }
     });
 
     describe('ordering with stacks', () => {
         beforeEach(() => {
             const rows = [
-                {x: 'a', y: 1, z: 10},
-                {x: 'b', y: 3, z: 20},
-                {x: 'd', y: 4, z: 30},
-                {x: 'c', y: 2, z: 40}
+                { x: 'a', y: 1, z: 10 },
+                { x: 'b', y: 3, z: 20 },
+                { x: 'd', y: 4, z: 30 },
+                { x: 'c', y: 2, z: 40 },
             ];
 
             id = 'bar-chart';
@@ -1237,10 +1314,13 @@ describe('dc.BarChart', () => {
             const group2 = dimension.group().reduceSum(d => d.z);
 
             chart = new dc.BarChart(`#${id}`);
-            chart.width(500).transitionDuration(0)
+            chart
+                .width(500)
+                .transitionDuration(0)
                 .x(d3.scaleBand())
                 .xUnits(dc.units.ordinal)
-                .elasticY(true).elasticX(true)
+                .elasticY(true)
+                .elasticX(true)
                 .dimension(dimension)
                 .group(group)
                 .stack(group2);
@@ -1273,12 +1353,15 @@ describe('dc.BarChart', () => {
             expect(xAxisText()).toEqual(['a', 'b', 'c', 'd']);
         });
 
-        function xAxisText () {
-            return chart.selectAll('g.x text').nodes().map(x => d3.select(x).text());
+        function xAxisText() {
+            return chart
+                .selectAll('g.x text')
+                .nodes()
+                .map(x => d3.select(x).text());
         }
     });
 
-    function nthStack (n) {
+    function nthStack(n) {
         const stack = d3.select(chart.selectAll('.stack').nodes()[n]);
 
         stack.nthBar = function (i) {
@@ -1298,22 +1381,24 @@ describe('dc.BarChart', () => {
         return stack;
     }
 
-    function forEachBar (assertions) {
+    function forEachBar(assertions) {
         chart.selectAll('rect.bar').each(function (d) {
             assertions(d3.select(this), d);
         });
     }
 
     // mostly because jshint complains about the +
-    function numAttr (attr) {
+    function numAttr(attr) {
         return function (selection) {
             return +selection.attr(attr);
         };
     }
 
-    function checkBarOverlap (n) {
-        const x = numAttr('x'), wid = numAttr('width');
-        expect(x(nthStack(0).nthBar(n)) + wid(nthStack(0).nthBar(n)))
-            .toBeLessThan(x(nthStack(0).nthBar(n + 1)));
+    function checkBarOverlap(n) {
+        const x = numAttr('x'),
+            wid = numAttr('width');
+        expect(x(nthStack(0).nthBar(n)) + wid(nthStack(0).nthBar(n))).toBeLessThan(
+            x(nthStack(0).nthBar(n + 1))
+        );
     }
 });

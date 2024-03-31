@@ -16,9 +16,7 @@ describe('dc.cboxMenu', () => {
         appendChartID(id);
 
         chart = new dc.CboxMenu(`#${id}`);
-        chart.dimension(stateDimension)
-            .group(stateGroup)
-            .transitionDuration(0);
+        chart.dimension(stateDimension).group(stateGroup).transitionDuration(0);
         chart.render();
     });
 
@@ -39,7 +37,9 @@ describe('dc.cboxMenu', () => {
             expect(chart.selectAll('ul').nodes().length).toEqual(1);
         });
         it('creates .dc-cbox-item class elements for each item', () => {
-            expect(chart.selectAll('li.dc-cbox-item').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('li.dc-cbox-item').nodes().length).toEqual(
+                stateGroup.all().length
+            );
         });
         it('creates an extra item for the select all option', () => {
             expect(chart.selectAll('li').nodes().length).toEqual(stateGroup.all().length + 1);
@@ -49,18 +49,32 @@ describe('dc.cboxMenu', () => {
         });
         // check labels and IDs
         it('creates input elements with IDs and labels with the corresponding "for" attribute', () => {
-            const str = chart.selectAll('input').nodes().map(e => e.id).join('--');
+            const str = chart
+                .selectAll('input')
+                .nodes()
+                .map(e => e.id)
+                .join('--');
             expect(str).toMatch(/^(input_\d+_\d+--)+input_\d+_all$/);
-            expect(str).toEqual(chart.selectAll('label').nodes().map(e => e.getAttribute('for')).join('--'));
+            expect(str).toEqual(
+                chart
+                    .selectAll('label')
+                    .nodes()
+                    .map(e => e.getAttribute('for'))
+                    .join('--')
+            );
         });
 
         // Single select
         it('creates radio buttons by default', () => {
             expect(chart.selectAll('input[type=checkbox]').nodes().length).toEqual(0);
-            expect(chart.selectAll('.dc-cbox-item input[type=radio]').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('.dc-cbox-item input[type=radio]').nodes().length).toEqual(
+                stateGroup.all().length
+            );
         });
         it('uses a radio button for the select all option', () => {
-            expect(chart.selectAll('input[type=radio]').nodes().length).toEqual(stateGroup.all().length + 1);
+            expect(chart.selectAll('input[type=radio]').nodes().length).toEqual(
+                stateGroup.all().length + 1
+            );
         });
         // select all:
         it('creates a select all option with default prompt text', () => {
@@ -75,7 +89,9 @@ describe('dc.cboxMenu', () => {
         // multiple select
         it('can be made into a multiple', () => {
             chart.multiple(true).redraw();
-            expect(chart.selectAll('.dc-cbox-item input[type=checkbox]').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('.dc-cbox-item input[type=checkbox]').nodes().length).toEqual(
+                stateGroup.all().length
+            );
         });
         it('does not use radio buttons for multiples', () => {
             chart.multiple(true).redraw();
@@ -93,7 +109,6 @@ describe('dc.cboxMenu', () => {
             const option = chart.selectAll('li input').nodes().pop();
             expect(option.textContent).toEqual('Select all');
         });
-
     });
 
     describe('select options', () => {
@@ -125,7 +140,7 @@ describe('dc.cboxMenu', () => {
 
     describe('regular single select', () => {
         describe('selecting an option', () => {
-            it('filters dimension based on selected option\'s value', () => {
+            it("filters dimension based on selected option's value", () => {
                 chart.onChange(stateGroup.all()[0].key);
                 expect(chart.filter()).toEqual('California');
             });
@@ -184,11 +199,19 @@ describe('dc.cboxMenu', () => {
             expect(selectedOptions.map(d => d.value)).toEqual(['California', 'Colorado']);
         });
         it('does not deselect previously filtered options when new option is added', () => {
-            chart.onChange([stateGroup.all()[0].key, stateGroup.all()[1].key, stateGroup.all()[5].key]);
+            chart.onChange([
+                stateGroup.all()[0].key,
+                stateGroup.all()[1].key,
+                stateGroup.all()[5].key,
+            ]);
 
             const selectedOptions = getSelectedOptions(chart);
             expect(selectedOptions.length).toEqual(3);
-            expect(selectedOptions.map(d => d.value)).toEqual(['California', 'Colorado', 'Ontario']);
+            expect(selectedOptions.map(d => d.value)).toEqual([
+                'California',
+                'Colorado',
+                'Ontario',
+            ]);
         });
 
         afterEach(() => {
@@ -206,7 +229,9 @@ describe('dc.cboxMenu', () => {
         it('can be overridden', () => {
             regionDimension.filter('South');
             chart.filterDisplayed(d => true).redraw();
-            expect(chart.selectAll('.dc-cbox-item').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('.dc-cbox-item').nodes().length).toEqual(
+                stateGroup.all().length
+            );
             expect(getOption(chart, stateGroup.all().length - 1).textContent).toEqual('Ontario: 0');
         });
         it('retains order with filtered options', () => {
@@ -220,11 +245,14 @@ describe('dc.cboxMenu', () => {
         });
     });
 
-    function getSelectedOptions (_chart) {
-        return _chart.selectAll('.dc-cbox-item input').nodes().filter(d => d.value && d.checked);
+    function getSelectedOptions(_chart) {
+        return _chart
+            .selectAll('.dc-cbox-item input')
+            .nodes()
+            .filter(d => d.value && d.checked);
     }
 
-    function getOption (_chart, i) {
+    function getOption(_chart, i) {
         return _chart.selectAll('.dc-cbox-item label').nodes()[i];
     }
 });

@@ -17,18 +17,18 @@ afterEach(() => {
     jasmine.clock().uninstall();
 });
 
-function appendChartID (id) {
+function appendChartID(id) {
     return d3.select('#test-content').append('div').attr('id', id);
 }
 
-function coordsFromTranslate (translationString) {
+function coordsFromTranslate(translationString) {
     const result = parseTranslate(translationString);
     expect(result).not.toBeNull();
-    return {x: +result[1], y: +result[2]};
+    return { x: +result[1], y: +result[2] };
 }
 
 // use UTC dates because these tests will be run in many time zones
-function makeDate (year, month, day) {
+function makeDate(year, month, day) {
     if (typeof year === 'string' || arguments.length !== 3) {
         throw new Error('makeDate takes year, month, day');
     }
@@ -37,12 +37,12 @@ function makeDate (year, month, day) {
 
 // the invisible non-array members that we add in dc.filter cause the objects
 // to be non-equal (correctly, but with no good diagnostics) in the eyes of Jasmine.
-function cleanDateRange (range) {
+function cleanDateRange(range) {
     return [range[0], range[1]];
 }
 
 // http://stackoverflow.com/questions/20068497/d3-transition-in-unit-testing
-function flushAllD3Transitions () {
+function flushAllD3Transitions() {
     d3.timerFlush();
 }
 
@@ -53,20 +53,22 @@ const simulateChartBrushing = function (chart, domainSelection) {
 
     // an event with fields that dc cares about
     chart._brushing({
-        selection: scaledSelection
+        selection: scaledSelection,
     });
 };
 
 // Simulate a dummy event - just enough for the handler to get fooled
 const simulateChart2DBrushing = function (chart, domainSelection) {
     // D3v4 needs scaled coordinates for the event
-    const scaledSelection = domainSelection.map(point => point.map((coord, i) => {
-        const scale = i === 0 ? chart.x() : chart.y();
-        return scale(coord);
-    }));
+    const scaledSelection = domainSelection.map(point =>
+        point.map((coord, i) => {
+            const scale = i === 0 ? chart.x() : chart.y();
+            return scale(coord);
+        })
+    );
 
     // an event with fields that dc cares about
     chart._brushing({
-        selection: scaledSelection
+        selection: scaledSelection,
     });
 };

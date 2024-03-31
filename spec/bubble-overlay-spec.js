@@ -10,10 +10,9 @@ describe('dc.bubbleOverlay', () => {
 
         const id = 'bubble-overlay';
         const parent = appendChartID(id);
-        const width = 600, height = 400;
-        const svg = parent.append('svg')
-            .attr('width', width)
-            .attr('height', height);
+        const width = 600,
+            height = 400;
+        const svg = parent.append('svg').attr('width', width).attr('height', height);
 
         chart = new dc.BubbleOverlay(`#${id}`)
             .svg(svg)
@@ -50,8 +49,12 @@ describe('dc.bubbleOverlay', () => {
         });
 
         it('should generate a correct class name for the overlay groups', () => {
-            expect(d3.select(chart.selectAll('g.node').nodes()[0]).attr('class')).toEqual('node california');
-            expect(d3.select(chart.selectAll('g.node').nodes()[3]).attr('class')).toEqual('node ontario');
+            expect(d3.select(chart.selectAll('g.node').nodes()[0]).attr('class')).toEqual(
+                'node california'
+            );
+            expect(d3.select(chart.selectAll('g.node').nodes()[3]).attr('class')).toEqual(
+                'node ontario'
+            );
         });
 
         it('should generate the correct number of overlay bubbles', () => {
@@ -59,17 +62,25 @@ describe('dc.bubbleOverlay', () => {
         });
 
         it('should generate a correct translate for overlay groups', () => {
-            expect(d3.select(chart.selectAll('g.node').nodes()[0]).attr('transform')).toMatchTranslate(100, 120);
-            expect(d3.select(chart.selectAll('g.node').nodes()[3]).attr('transform')).toMatchTranslate(180, 90);
+            expect(
+                d3.select(chart.selectAll('g.node').nodes()[0]).attr('transform')
+            ).toMatchTranslate(100, 120);
+            expect(
+                d3.select(chart.selectAll('g.node').nodes()[3]).attr('transform')
+            ).toMatchTranslate(180, 90);
         });
 
         it('should generate correct radii for circles', () => {
             expect(d3.select(chart.selectAll('circle.bubble').nodes()[0]).attr('r')).toEqual('87');
-            expect(d3.select(chart.selectAll('circle.bubble').nodes()[3]).attr('r')).toEqual('48.5');
+            expect(d3.select(chart.selectAll('circle.bubble').nodes()[3]).attr('r')).toEqual(
+                '48.5'
+            );
         });
 
         it('should generate correct labels', () => {
-            expect(d3.select(chart.selectAll('g.node text').nodes()[0]).text()).toEqual('California');
+            expect(d3.select(chart.selectAll('g.node text').nodes()[0]).text()).toEqual(
+                'California'
+            );
             expect(d3.select(chart.selectAll('g.node text').nodes()[3]).text()).toEqual('Ontario');
         });
 
@@ -79,8 +90,12 @@ describe('dc.bubbleOverlay', () => {
         });
 
         it('generate the correct titles', () => {
-            expect(d3.select(chart.selectAll('g.node title').nodes()[0]).text()).toEqual('Title: California');
-            expect(d3.select(chart.selectAll('g.node title').nodes()[3]).text()).toEqual('Title: Ontario');
+            expect(d3.select(chart.selectAll('g.node title').nodes()[0]).text()).toEqual(
+                'Title: California'
+            );
+            expect(d3.select(chart.selectAll('g.node title').nodes()[3]).text()).toEqual(
+                'Title: Ontario'
+            );
         });
 
         it('should only generate titles once', () => {
@@ -89,17 +104,27 @@ describe('dc.bubbleOverlay', () => {
         });
 
         it('should fill circles with the specified colors', () => {
-            expect(d3.select(chart.selectAll('circle.bubble').nodes()[0]).attr('fill')).toEqual('blue');
-            expect(d3.select(chart.selectAll('circle.bubble').nodes()[3]).attr('fill')).toEqual('blue');
+            expect(d3.select(chart.selectAll('circle.bubble').nodes()[0]).attr('fill')).toEqual(
+                'blue'
+            );
+            expect(d3.select(chart.selectAll('circle.bubble').nodes()[3]).attr('fill')).toEqual(
+                'blue'
+            );
         });
 
         it('should highlight the filtered bubbles', () => {
             chart.filter('Colorado');
             chart.filter('California');
             chart.redraw();
-            expect(d3.select(chart.selectAll('g.node').nodes()[0]).attr('class')).toEqual('node california selected');
-            expect(d3.select(chart.selectAll('g.node').nodes()[1]).attr('class')).toEqual('node colorado selected');
-            expect(d3.select(chart.selectAll('g.node').nodes()[3]).attr('class')).toEqual('node ontario deselected');
+            expect(d3.select(chart.selectAll('g.node').nodes()[0]).attr('class')).toEqual(
+                'node california selected'
+            );
+            expect(d3.select(chart.selectAll('g.node').nodes()[1]).attr('class')).toEqual(
+                'node colorado selected'
+            );
+            expect(d3.select(chart.selectAll('g.node').nodes()[3]).attr('class')).toEqual(
+                'node ontario deselected'
+            );
         });
     });
 
@@ -108,7 +133,7 @@ describe('dc.bubbleOverlay', () => {
         beforeEach(() => {
             regionDim = data.dimension(d => d.region);
         });
-        function expectRadii (expected) {
+        function expectRadii(expected) {
             const circles = chart.selectAll('circle.bubble').nodes();
             circles.forEach((c, i) => {
                 expect(+d3.select(c).attr('r')).toBeWithinDelta(expected[i], 0.1);
@@ -139,4 +164,3 @@ describe('dc.bubbleOverlay', () => {
         });
     });
 });
-

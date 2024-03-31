@@ -25,9 +25,8 @@ describe('dc.heatmap', () => {
             .height(chartHeight)
             .width(chartWidth)
             .transitionDuration(0)
-            .margins({top: 5, right: 5, bottom: 5, left: 5})
+            .margins({ top: 5, right: 5, bottom: 5, left: 5 })
             .calculateColorDomain();
-
     });
 
     describe('rendering the heatmap', () => {
@@ -112,7 +111,8 @@ describe('dc.heatmap', () => {
 
         describe('with custom labels', () => {
             beforeEach(() => {
-                chart.colsLabel(x => `col ${x}`)
+                chart
+                    .colsLabel(x => `col ${x}`)
                     .rowsLabel(x => `row ${x}`)
                     .redraw();
             });
@@ -159,7 +159,6 @@ describe('dc.heatmap', () => {
                 });
             });
         });
-
     });
 
     describe('override scale domains', () => {
@@ -224,11 +223,14 @@ describe('dc.heatmap', () => {
         let data2, dimension2, group2, originalDomain;
 
         const reduceDimensionValues = function (dmsn) {
-            return dmsn.top(Infinity).reduce((p, d) => {
-                p.cols.add(+d.colData);
-                p.rows.add(+d.rowData);
-                return p;
-            }, {cols: new Set(), rows: new Set()});
+            return dmsn.top(Infinity).reduce(
+                (p, d) => {
+                    p.cols.add(+d.colData);
+                    p.rows.add(+d.rowData);
+                    return p;
+                },
+                { cols: new Set(), rows: new Set() }
+            );
         };
 
         beforeEach(() => {
@@ -295,8 +297,10 @@ describe('dc.heatmap', () => {
             chart.render();
         });
 
-        function clickCellOnChart (_chart, x, y) {
-            const oneCell = _chart.selectAll('.box-group').filter(d => d.key[0] === x && d.key[1] === y);
+        function clickCellOnChart(_chart, x, y) {
+            const oneCell = _chart
+                .selectAll('.box-group')
+                .filter(d => d.key[0] === x && d.key[1] === y);
             oneCell.select('rect').on('click')({}, oneCell.datum());
             return oneCell;
         }
@@ -348,7 +352,7 @@ describe('dc.heatmap', () => {
             });
         });
         describe('on axis labels', () => {
-            function assertOnlyThisAxisIsFiltered (_chart, axis, value) {
+            function assertOnlyThisAxisIsFiltered(_chart, axis, value) {
                 _chart.selectAll('.box-group').each(d => {
                     if (d.key[axis] === value) {
                         expect(_chart.hasFilter(d.key)).toBeTruthy();
@@ -427,11 +431,11 @@ describe('dc.heatmap', () => {
             sl: 'sepal_length',
             sw: 'sepal_width',
             pl: 'petal_length',
-            pw: 'petal_width'
+            pw: 'petal_width',
         };
         const keyfuncs = {};
 
-        function duo_key (ab1, ab2) {
+        function duo_key(ab1, ab2) {
             return function (d) {
                 return [keyfuncs[ab1](d[fields[ab1]]), keyfuncs[ab2](d[fields[ab2]])];
             };
@@ -447,7 +451,7 @@ describe('dc.heatmap', () => {
                 });
             });
             // autogenerate a key function for an extent
-            function key_function (extent) {
+            function key_function(extent) {
                 const div = extent[1] - extent[0] < 5 ? 2 : 1;
                 return function (k) {
                     return Math.floor(k * div) / div;
@@ -460,30 +464,35 @@ describe('dc.heatmap', () => {
                 keyfuncs[ab] = key_function(extents[ab]);
             });
             data = crossfilter(irisData);
-            function key_part (i) {
+            function key_part(i) {
                 return function (kv) {
                     return kv.key[i];
                 };
             }
-            function reduce_species (grp) {
+            function reduce_species(grp) {
                 grp.reduce(
                     (p, v) => {
                         p[v.species]++;
                         p.total++;
                         return p;
-                    }, (p, v) => {
+                    },
+                    (p, v) => {
                         p[v.species]--;
                         p.total--;
                         return p;
-                    }, () => {
-                        const init = {total: 0};
-                        species.forEach(s => { init[s] = 0; });
+                    },
+                    () => {
+                        const init = { total: 0 };
+                        species.forEach(s => {
+                            init[s] = 0;
+                        });
                         return init;
                     }
                 );
             }
-            function max_species (d) {
-                let max = 0, i = -1;
+            function max_species(d) {
+                let max = 0,
+                    i = -1;
                 species.forEach((s, j) => {
                     if (d.value[s] > max) {
                         max = d.value[s];
@@ -492,35 +501,44 @@ describe('dc.heatmap', () => {
                 });
                 return i >= 0 ? species[i] : null;
             }
-            function initialize_bubble (bblChart) {
+            function initialize_bubble(bblChart) {
                 bblChart
                     .width(400)
                     .height(400)
                     .transitionDuration(0)
-                    .x(d3.scaleLinear()).xAxisPadding(0.5)
-                    .y(d3.scaleLinear()).yAxisPadding(0.5)
+                    .x(d3.scaleLinear())
+                    .xAxisPadding(0.5)
+                    .y(d3.scaleLinear())
+                    .yAxisPadding(0.5)
                     .elasticX(true)
                     .elasticY(true)
                     .label(dc.utils.constant(''))
                     .keyAccessor(key_part(0))
                     .valueAccessor(key_part(1))
-                    .r(d3.scaleLinear().domain([0,20]).range([4,25]))
+                    .r(d3.scaleLinear().domain([0, 20]).range([4, 25]))
                     .radiusValueAccessor(kv => kv.value.total)
-                    .colors(d3.scaleOrdinal()
+                    .colors(
+                        d3
+                            .scaleOrdinal()
                             .domain(species.concat('none'))
-                            .range(['#e41a1c','#377eb8','#4daf4a', '#f8f8f8']))
+                            .range(['#e41a1c', '#377eb8', '#4daf4a', '#f8f8f8'])
+                    )
                     .colorAccessor(d => max_species(d) || 'none');
             }
-            function initialize_heatmap (heatMap) {
+            function initialize_heatmap(heatMap) {
                 heatMap
                     .width(400)
                     .height(400)
-                    .xBorderRadius(15).yBorderRadius(15)
+                    .xBorderRadius(15)
+                    .yBorderRadius(15)
                     .keyAccessor(key_part(0))
                     .valueAccessor(key_part(1))
-                    .colors(d3.scaleOrdinal()
+                    .colors(
+                        d3
+                            .scaleOrdinal()
                             .domain(species.concat('none'))
-                            .range(['#e41a1c','#377eb8','#4daf4a', '#f8f8f8']))
+                            .range(['#e41a1c', '#377eb8', '#4daf4a', '#f8f8f8'])
+                    )
                     .colorAccessor(d => max_species(d) || 'none')
                     .renderTitle(true)
                     .title(d => JSON.stringify(d.value, null, 2));
@@ -530,8 +548,10 @@ describe('dc.heatmap', () => {
             appendChartID(bubbleId);
 
             bubbleChart = new dc.BubbleChart(`#${bubbleId}`);
-            const sepalDim = data.dimension(duo_key('sl', 'sw')), sepalGroup = sepalDim.group();
-            petalDim = data.dimension(duo_key('pl', 'pw')); petalGroup = petalDim.group();
+            const sepalDim = data.dimension(duo_key('sl', 'sw')),
+                sepalGroup = sepalDim.group();
+            petalDim = data.dimension(duo_key('pl', 'pw'));
+            petalGroup = petalDim.group();
 
             reduce_species(sepalGroup);
             reduce_species(petalGroup);
@@ -541,11 +561,11 @@ describe('dc.heatmap', () => {
             chart.render();
         });
         // return brand-new objects and keys every time
-        function clone_group (grp) {
-            function clone_kvs (all) {
+        function clone_group(grp) {
+            function clone_kvs(all) {
                 return all.map(kv => ({
                     key: kv.key.slice(0),
-                    value: Object.assign({}, kv.value)
+                    value: Object.assign({}, kv.value),
                 }));
             }
             return {
@@ -554,11 +574,11 @@ describe('dc.heatmap', () => {
                 },
                 top: function (N) {
                     return clone_kvs(grp.top(N));
-                }
+                },
             };
         }
 
-        function testRectFillsBubble12 (bblChart) {
+        function testRectFillsBubble12(bblChart) {
             const rects = bblChart.selectAll('rect').nodes();
             expect(d3.select(rects[0]).attr('fill')).toMatch(/#f8f8f8/i);
             expect(d3.select(rects[3]).attr('fill')).toMatch(/#377eb8/i);
@@ -569,7 +589,7 @@ describe('dc.heatmap', () => {
             expect(d3.select(rects[11]).attr('fill')).toMatch(/#f8f8f8/i);
             expect(d3.select(rects[12]).attr('fill')).toMatch(/#f8f8f8/i);
         }
-        function testRectTitlesBubble12 (bblChart) {
+        function testRectTitlesBubble12(bblChart) {
             const titles = bblChart.selectAll('g.box-group title').nodes();
             expect(JSON.parse(d3.select(titles[0]).text()).total).toBe(0);
             expect(JSON.parse(d3.select(titles[2]).text()).total).toBe(0);
@@ -584,7 +604,9 @@ describe('dc.heatmap', () => {
 
         describe('bubble filtering with straight crossfilter', () => {
             beforeEach(() => {
-                bubbleChart.filter(duo_key('sl', 'sw')({sepal_length: 5.5, sepal_width: 3})).redrawGroup();
+                bubbleChart
+                    .filter(duo_key('sl', 'sw')({ sepal_length: 5.5, sepal_width: 3 }))
+                    .redrawGroup();
             });
             it('updates rect fills correctly', () => {
                 testRectFillsBubble12(chart);
@@ -597,7 +619,9 @@ describe('dc.heatmap', () => {
             beforeEach(() => {
                 chart.group(clone_group(petalGroup));
                 chart.render();
-                bubbleChart.filter(duo_key('sl', 'sw')({sepal_length: 5.5, sepal_width: 3})).redrawGroup();
+                bubbleChart
+                    .filter(duo_key('sl', 'sw')({ sepal_length: 5.5, sepal_width: 3 }))
+                    .redrawGroup();
             });
             it('updates rect fills correctly', () => {
                 testRectFillsBubble12(chart);

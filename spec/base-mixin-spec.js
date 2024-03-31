@@ -502,9 +502,7 @@ describe('dc.baseMixin', () => {
 
         describe('with viewbox enabled', () => {
             beforeEach(() => {
-                chart
-                    .useViewBoxResizing(true)
-                    .resetSvg();
+                chart.useViewBoxResizing(true).resetSvg();
             });
 
             it('has useViewBoxResizing set', () => {

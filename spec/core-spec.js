@@ -15,7 +15,8 @@ describe('dc.core', () => {
             //               | | 3 segment version
             //               | |                    |optional release prefixed by '-'
             //               | |                    |                                        |optional build prefixed by '+'
-            const reSemver = /^v?((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?(?:\+([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/;
+            const reSemver =
+                /^v?((\d+)\.(\d+)\.(\d+))(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?(?:\+([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/;
             expect(dc.version).toMatch(reSemver);
         });
     });
@@ -23,9 +24,7 @@ describe('dc.core', () => {
     describe('charts', () => {
         let chart;
         beforeEach(() => {
-            chart = new dc.PieChart('#id')
-                    .dimension(valueDimension)
-                    .group(valueGroup);
+            chart = new dc.PieChart('#id').dimension(valueDimension).group(valueGroup);
             spyOn(chart, 'filterAll');
             spyOn(chart, 'render');
             spyOn(chart, 'redraw');
@@ -57,12 +56,10 @@ describe('dc.core', () => {
         let chartGrouped;
         const chartGroup = 'testChartGroup';
         beforeEach(() => {
-            chart = new dc.PieChart('#id')
-                    .dimension(valueDimension)
-                    .group(valueGroup);
+            chart = new dc.PieChart('#id').dimension(valueDimension).group(valueGroup);
             chartGrouped = new dc.PieChart('#id2', chartGroup)
-                    .dimension(valueDimension)
-                    .group(valueGroup);
+                .dimension(valueDimension)
+                .group(valueGroup);
             return chart;
         });
 
@@ -108,7 +105,7 @@ describe('dc.core', () => {
                 },
                 delay: function () {
                     return this;
-                }
+                },
             };
             spyOn(selections, 'transition').and.callThrough();
             spyOn(selections, 'duration').and.callThrough();
@@ -186,8 +183,10 @@ describe('dc.core', () => {
         });
 
         describe('.ordinal', () => {
-            it('should throw - it\'s a placeholder only', () => {
-                expect(dc.units.ordinal).toThrow(new Error('dc.units.ordinal should not be called - it is a placeholder'));
+            it("should throw - it's a placeholder only", () => {
+                expect(dc.units.ordinal).toThrow(
+                    new Error('dc.units.ordinal should not be called - it is a placeholder')
+                );
             });
         });
     });
@@ -245,7 +244,7 @@ describe('dc.core', () => {
             dc.renderlet(group => {
                 result.called = group ? group : true;
             });
-            result = {called: false};
+            result = { called: false };
         });
 
         it('renderAll call back should be triggered', () => {

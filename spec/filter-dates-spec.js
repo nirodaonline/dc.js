@@ -9,7 +9,7 @@ describe('dc.filter-dates', () => {
     let dateDim1, dateDim2, group1, group2, row1, row2;
     const width = 400;
     const height = 200;
-    const margins = {top: 15, right: 10, bottom: 20, left: 40};
+    const margins = { top: 15, right: 10, bottom: 20, left: 40 };
     beforeEach(() => {
         // Months are 0 indexed...
         const start = makeDate(2013, 10, 1);
@@ -23,7 +23,7 @@ describe('dc.filter-dates', () => {
                 randomDate(start, end),
                 randomVowelString(stringLength),
                 Math.floor(Math.random() * 20),
-                Math.floor(Math.random() * 30000)
+                Math.floor(Math.random() * 30000),
             ];
         }
 
@@ -73,7 +73,7 @@ describe('dc.filter-dates', () => {
     });
 
     // Create a Random Date
-    function randomDate (start, end) {
+    function randomDate(start, end) {
         const d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
         d.setUTCHours(0, 0, 0, 0);
         return d;
@@ -82,7 +82,7 @@ describe('dc.filter-dates', () => {
     // Create a Random String of vowels
     const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 
-    function randomVowelString (length) {
+    function randomVowelString(length) {
         let val = '';
         for (let i = 0; i < length; i++) {
             val = val + vowels[Math.floor(Math.random() * (vowels.length - 1))];

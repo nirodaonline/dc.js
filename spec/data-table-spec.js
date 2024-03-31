@@ -24,13 +24,14 @@ describe('dc.dataTable', () => {
             .size(3)
             .sortBy(d => d.id)
             .order(d3.descending)
-            .columns(
-                [function (d) {
+            .columns([
+                function (d) {
                     return d.id;
-                }, function (d) {
+                },
+                function (d) {
                     return d.status;
-                }]
-            );
+                },
+            ]);
     });
 
     describe('simple table', () => {
@@ -65,15 +66,19 @@ describe('dc.dataTable', () => {
             });
             it('treats showGroups as synonym of showSections', () => {
                 expect(chart.showGroups()).toEqual(chart.showSections());
-                const newVal = !(chart.showGroups());
+                const newVal = !chart.showGroups();
                 chart.showGroups(newVal);
                 expect(chart.showSections()).toBe(newVal);
             });
             it('group tr should not be undefined', () => {
-                expect(typeof(chart.selectAll('tr.dc-table-group').nodes()[0])).not.toBe('undefined');
+                expect(typeof chart.selectAll('tr.dc-table-group').nodes()[0]).not.toBe(
+                    'undefined'
+                );
             });
             it('sets column span set on group tr', () => {
-                expect(chart.selectAll('tr.dc-table-group td').nodes()[0].getAttribute('colspan')).toEqual('2');
+                expect(
+                    chart.selectAll('tr.dc-table-group td').nodes()[0].getAttribute('colspan')
+                ).toEqual('2');
             });
             it('creates id column', () => {
                 expect(chart.selectAll('td._0').nodes()[0].innerHTML).toEqual('9');
@@ -157,42 +162,59 @@ describe('dc.dataTable', () => {
             chart.render();
         });
         it('should render value and capitalized header', () => {
-            const cols = chart.selectAll('td.dc-table-column').nodes().map(d => d.textContent);
+            const cols = chart
+                .selectAll('td.dc-table-column')
+                .nodes()
+                .map(d => d.textContent);
             const expected = ['Mississippi', 'Mississippi', 'Delaware'];
             expect(cols.length).toEqual(expected.length);
             expected.forEach(d => {
                 expect(cols).toContain(d);
             });
-            const colheader = chart.selectAll('th.dc-table-head').nodes().map(d => d.textContent);
+            const colheader = chart
+                .selectAll('th.dc-table-head')
+                .nodes()
+                .map(d => d.textContent);
             expect(colheader.length).toEqual(1);
             expect(colheader[0]).toEqual('State');
-
         });
     });
     describe('specifying chart columns with function', () => {
         beforeEach(() => {
-            chart.columns([function (d) {return `${d.id}test`;}]);
+            chart.columns([
+                function (d) {
+                    return `${d.id}test`;
+                },
+            ]);
             chart.render();
         });
         it('should render function result and no header', () => {
-            const cols = chart.selectAll('td.dc-table-column').nodes().map(d => d.textContent);
+            const cols = chart
+                .selectAll('td.dc-table-column')
+                .nodes()
+                .map(d => d.textContent);
             const expected = ['9test', '8test', '3test'];
             expect(cols.length).toEqual(expected.length);
             expected.forEach(d => {
                 expect(cols).toContain(d);
             });
-            const colheader = chart.selectAll('th.dc-table-head').nodes().map(d => d.textContent);
+            const colheader = chart
+                .selectAll('th.dc-table-head')
+                .nodes()
+                .map(d => d.textContent);
             expect(colheader.length).toEqual(0);
         });
     });
     describe('specifying chart columns with object', () => {
         beforeEach(() => {
-            chart.columns([{
-                label: 'Test ID',
-                format: function (d) {
-                    return `test${d.id}`;
-                }
-            }]);
+            chart.columns([
+                {
+                    label: 'Test ID',
+                    format: function (d) {
+                        return `test${d.id}`;
+                    },
+                },
+            ]);
             chart.render();
         });
         it('should produce correct table header with single column', () => {
@@ -200,13 +222,19 @@ describe('dc.dataTable', () => {
             expect(thead.nodes().length).toBe(1);
             const tr = thead.selectAll('tr');
             expect(tr.nodes().length).toBe(1);
-            const colheader = tr.selectAll('th.dc-table-head').nodes().map(d => d.textContent);
+            const colheader = tr
+                .selectAll('th.dc-table-head')
+                .nodes()
+                .map(d => d.textContent);
             expect(colheader.length).toEqual(1);
             expect(colheader[0]).toEqual('Test ID');
         });
 
         it('should render correct values in rows', () => {
-            const cols = chart.selectAll('td.dc-table-column').nodes().map(d => d.textContent);
+            const cols = chart
+                .selectAll('td.dc-table-column')
+                .nodes()
+                .map(d => d.textContent);
             const expected = ['test9', 'test8', 'test3'];
             expect(cols.length).toEqual(expected.length);
             expected.forEach((d, i) => {
@@ -219,15 +247,26 @@ describe('dc.dataTable', () => {
         beforeEach(() => {
             // add some garbage for table to replace
             d3.select('#data-table')
-                .selectAll('thead').data([0]).enter().append('thead')
-                .selectAll('tr').data([1,2]).enter().append('tr')
-                .selectAll('th').data([1,2,3]).enter().append('th');
-            chart.columns([{
-                label: 'Test ID',
-                format: function (d) {
-                    return `test${d.id}`;
-                }
-            }]);
+                .selectAll('thead')
+                .data([0])
+                .enter()
+                .append('thead')
+                .selectAll('tr')
+                .data([1, 2])
+                .enter()
+                .append('tr')
+                .selectAll('th')
+                .data([1, 2, 3])
+                .enter()
+                .append('th');
+            chart.columns([
+                {
+                    label: 'Test ID',
+                    format: function (d) {
+                        return `test${d.id}`;
+                    },
+                },
+            ]);
             chart.render();
         });
         it('should produce correct table header with single column', () => {
@@ -235,7 +274,10 @@ describe('dc.dataTable', () => {
             expect(thead.nodes().length).toBe(1);
             const tr = thead.selectAll('tr');
             expect(tr.nodes().length).toBe(1);
-            const colheader = tr.selectAll('th.dc-table-head').nodes().map(d => d.textContent);
+            const colheader = tr
+                .selectAll('th.dc-table-head')
+                .nodes()
+                .map(d => d.textContent);
             expect(colheader.length).toEqual(1);
             expect(colheader[0]).toEqual('Test ID');
         });
@@ -247,7 +289,7 @@ describe('dc.dataTable', () => {
             chart.render();
         });
         it('group tr should be undefined', () => {
-            expect(typeof(chart.selectAll('tr.dc-table-group').nodes()[0])).toBe('undefined');
+            expect(typeof chart.selectAll('tr.dc-table-group').nodes()[0]).toBe('undefined');
         });
     });
 
@@ -256,4 +298,3 @@ describe('dc.dataTable', () => {
         countryDimension.filterAll();
     });
 });
-

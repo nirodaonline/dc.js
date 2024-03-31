@@ -3,7 +3,7 @@ describe('dc.numberDisplay', () => {
     let data, meanGroup;
     let countryDimension;
 
-    function average (d) {
+    function average(d) {
         return d.n ? d.tot / d.n : 0;
     }
 
@@ -21,13 +21,13 @@ describe('dc.numberDisplay', () => {
                 p.tot -= +v.value;
                 return p;
             },
-            () => ({n: 0,tot: 0})
+            () => ({ n: 0, tot: 0 })
         );
         countryDimension = data.dimension(d => d.countrycode);
         countryDimension.filter('CA');
     });
 
-    function buildChart (id) {
+    function buildChart(id) {
         const chart = new dc.NumberDisplay(id)
             .transitionDuration(0)
             .group(meanGroup)
@@ -69,7 +69,7 @@ describe('dc.numberDisplay', () => {
         });
         describe('html with one, some and none', () => {
             beforeEach(() => {
-                chart.html({one: '%number number',none: 'no number',some: '%number numbers'});
+                chart.html({ one: '%number number', none: 'no number', some: '%number numbers' });
                 chart.redraw();
                 d3.timerFlush();
             });
@@ -79,7 +79,7 @@ describe('dc.numberDisplay', () => {
         });
         describe('html with one, some and none', () => {
             beforeEach(() => {
-                chart.html({one: '%number number',none: 'no number',some: '%number numbers'});
+                chart.html({ one: '%number number', none: 'no number', some: '%number numbers' });
                 chart.valueAccessor(d => 1);
                 chart.redraw();
                 d3.timerFlush();
@@ -90,7 +90,7 @@ describe('dc.numberDisplay', () => {
         });
         describe('html with one, some and none', () => {
             beforeEach(() => {
-                chart.html({one: '%number number',none: 'no number',some: '%number numbers'});
+                chart.html({ one: '%number number', none: 'no number', some: '%number numbers' });
                 chart.valueAccessor(d => 0);
                 chart.redraw();
                 d3.timerFlush();
@@ -101,7 +101,7 @@ describe('dc.numberDisplay', () => {
         });
         describe('html with just one', () => {
             beforeEach(() => {
-                chart.html({one: '%number number'});
+                chart.html({ one: '%number number' });
                 chart.redraw();
                 d3.timerFlush();
             });
@@ -111,7 +111,7 @@ describe('dc.numberDisplay', () => {
         });
         describe('html with just some', () => {
             beforeEach(() => {
-                chart.html({some: '%number numbers'});
+                chart.html({ some: '%number numbers' });
                 chart.redraw();
                 d3.timerFlush();
             });
@@ -148,16 +148,19 @@ describe('dc.numberDisplay', () => {
             countryDimension.filterAll();
         });
     });
-    describe('Inline nonspan element' , () => {
+    describe('Inline nonspan element', () => {
         beforeEach(() => {
             const div = d3.select('body').append('div').attr('id', 'number-display-test-section');
             div.append('p').html('There are <em id="nonspan"></em> Total Widgets.');
             buildChart('#nonspan');
         });
         it('should have text value in child', () => {
-            expect(d3.select('body').select('#number-display-test-section').html())
-                .toMatch(new RegExp('<p>There are <em (?:id="nonspan" class="dc-chart"|class="dc-chart" id="nonspan")>' +
-                    '<span class="number-display">38.5</span></em> Total Widgets.</p>'));
+            expect(d3.select('body').select('#number-display-test-section').html()).toMatch(
+                new RegExp(
+                    '<p>There are <em (?:id="nonspan" class="dc-chart"|class="dc-chart" id="nonspan")>' +
+                        '<span class="number-display">38.5</span></em> Total Widgets.</p>'
+                )
+            );
         });
         afterEach(() => {
             countryDimension.filterAll();
@@ -185,15 +188,13 @@ describe('dc.numberDisplay', () => {
 
         describe('with reversed ordering', () => {
             beforeEach(() => {
-                chart.ordering(kv => -kv.value)
-                    .render();
+                chart.ordering(kv => -kv.value).render();
                 d3.timerFlush();
             });
             it('should show the smallest value', () => {
                 expect(chart.select('span.number-display').text()).toEqual('77.0');
             });
         });
-
     });
     describe('Infinity', () => {
         let chart;
@@ -201,8 +202,13 @@ describe('dc.numberDisplay', () => {
             const id = 'empty-div';
             appendChartID(id);
             chart = buildChart(`#${id}`);
-            chart.valueAccessor(x => x)
-                .group({value: function () { return Infinity; }})
+            chart
+                .valueAccessor(x => x)
+                .group({
+                    value: function () {
+                        return Infinity;
+                    },
+                })
                 .formatNumber(d => d)
                 .render();
             d3.timerFlush();
@@ -212,7 +218,12 @@ describe('dc.numberDisplay', () => {
         });
         describe('returning to finite', () => {
             beforeEach(() => {
-                chart.group({value: function () { return 17; }})
+                chart
+                    .group({
+                        value: function () {
+                            return 17;
+                        },
+                    })
                     .render();
                 d3.timerFlush();
             });

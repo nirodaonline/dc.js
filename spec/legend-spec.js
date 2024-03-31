@@ -75,9 +75,18 @@ describe('dc.legend', () => {
 
         describe('without .horizontal(true)', () => {
             it('should place legend items vertically', () => {
-                expect(coordsFromTranslate(legendItem(0).attr('transform')).y).toBeWithinDelta(0, 1);
-                expect(coordsFromTranslate(legendItem(1).attr('transform')).y).toBeWithinDelta(18, 2);
-                expect(coordsFromTranslate(legendItem(2).attr('transform')).y).toBeWithinDelta(36, 4);
+                expect(coordsFromTranslate(legendItem(0).attr('transform')).y).toBeWithinDelta(
+                    0,
+                    1
+                );
+                expect(coordsFromTranslate(legendItem(1).attr('transform')).y).toBeWithinDelta(
+                    18,
+                    2
+                );
+                expect(coordsFromTranslate(legendItem(2).attr('transform')).y).toBeWithinDelta(
+                    36,
+                    4
+                );
             });
         });
 
@@ -88,9 +97,18 @@ describe('dc.legend', () => {
             });
 
             it('should place legend items horizontally', () => {
-                expect(coordsFromTranslate(legendItem(0).attr('transform')).x).toBeWithinDelta(0, 1);
-                expect(coordsFromTranslate(legendItem(1).attr('transform')).x).toBeWithinDelta(65, 5);
-                expect(coordsFromTranslate(legendItem(2).attr('transform')).x).toBeWithinDelta(155, 15);
+                expect(coordsFromTranslate(legendItem(0).attr('transform')).x).toBeWithinDelta(
+                    0,
+                    1
+                );
+                expect(coordsFromTranslate(legendItem(1).attr('transform')).x).toBeWithinDelta(
+                    65,
+                    5
+                );
+                expect(coordsFromTranslate(legendItem(2).attr('transform')).x).toBeWithinDelta(
+                    155,
+                    15
+                );
             });
         });
 
@@ -99,7 +117,9 @@ describe('dc.legend', () => {
             beforeEach(() => {
                 chart.legend(new dc.Legend().horizontal(true).legendWidth(60).itemWidth(30));
                 chart.render();
-                legendCoords = d3.range(3).map(i => coordsFromTranslate(legendItem(i).attr('transform')));
+                legendCoords = d3
+                    .range(3)
+                    .map(i => coordsFromTranslate(legendItem(i).attr('transform')));
             });
 
             it('should place legend items in two columns. third item is new row', () => {
@@ -142,16 +162,23 @@ describe('dc.legend', () => {
         });
 
         describe('with .horizontal(true) and .autoItemWidth(true)', () => {
-
             let fixedWidthOffset1, autoWidthCoords;
 
             beforeEach(() => {
                 chart.legend(new dc.Legend().horizontal(true).itemWidth(30).autoItemWidth(false));
                 chart.render();
                 fixedWidthOffset1 = coordsFromTranslate(legendItem(1).attr('transform')).x;
-                chart.legend(new dc.Legend().horizontal(true).itemWidth(30).autoItemWidth(true).legendWidth(160));
+                chart.legend(
+                    new dc.Legend()
+                        .horizontal(true)
+                        .itemWidth(30)
+                        .autoItemWidth(true)
+                        .legendWidth(160)
+                );
                 chart.render();
-                autoWidthCoords = d3.range(3).map(i => coordsFromTranslate(legendItem(i).attr('transform')));
+                autoWidthCoords = d3
+                    .range(3)
+                    .map(i => coordsFromTranslate(legendItem(i).attr('transform')));
             });
 
             it('autoWidth x offset should be greater than fixedWidth x offset for the second item', () => {
@@ -165,11 +192,13 @@ describe('dc.legend', () => {
 
         describe('with .legendText()', () => {
             beforeEach(() => {
-                chart.legend(new dc.Legend().legendText((d, i) => {
-                    const _i = i + 1;
+                chart.legend(
+                    new dc.Legend().legendText((d, i) => {
+                        const _i = i + 1;
 
-                    return `${_i}. ${d.name}`;
-                }));
+                        return `${_i}. ${d.name}`;
+                    })
+                );
                 chart.render();
             });
 
@@ -182,8 +211,7 @@ describe('dc.legend', () => {
 
         describe('with .maxItems(2)', () => {
             beforeEach(() => {
-                chart.legend()
-                    .maxItems(2);
+                chart.legend().maxItems(2);
                 chart.render();
             });
             it('should display two items', () => {
@@ -193,8 +221,7 @@ describe('dc.legend', () => {
 
         describe('with invalid .maxItems', () => {
             beforeEach(() => {
-                chart.legend()
-                    .maxItems('foo');
+                chart.legend().maxItems('foo');
                 chart.render();
             });
             it('should display three items', () => {
@@ -210,19 +237,16 @@ describe('dc.legend', () => {
             chart = new dc.CompositeChart(`#${id}`);
 
             const subChart1 = new dc.LineChart(chart);
-            subChart1
-                .dimension(dateDimension)
-                .group(dateIdSumGroup, 'Id Sum')
-                .dashStyle([10,1]);
+            subChart1.dimension(dateDimension).group(dateIdSumGroup, 'Id Sum').dashStyle([10, 1]);
 
             const subChart2 = new dc.LineChart(chart);
             subChart2
                 .dimension(dateDimension)
                 .group(dateValueSumGroup, 'Value Sum')
-                .dashStyle([2,1]);
+                .dashStyle([2, 1]);
 
             chart
-                .x(d3.scaleLinear().domain([0,20]))
+                .x(d3.scaleLinear().domain([0, 20]))
                 .legend(new dc.Legend().x(400).y(10).itemHeight(13).gap(5))
                 .compose([subChart1, subChart2])
                 .render();
@@ -254,7 +278,9 @@ describe('dc.legend', () => {
 
             it('disable hover highlighting for that legend item', () => {
                 legendItem(0).on('mouseover')({}, legendItem(0).datum());
-                expect(d3.select(chart.selectAll('path.line').nodes()[1]).classed('fadeout')).toBeFalsy();
+                expect(
+                    d3.select(chart.selectAll('path.line').nodes()[1]).classed('fadeout')
+                ).toBeFalsy();
             });
 
             describe('clicking on a faded out legend item', () => {
@@ -273,17 +299,16 @@ describe('dc.legend', () => {
         });
     });
 
-    function legendItem (n) {
+    function legendItem(n) {
         return d3.select(chart.selectAll('g.dc-legend g.dc-legend-item').nodes()[n]);
     }
-    function legendLabel (n) {
+    function legendLabel(n) {
         return d3.select(chart.selectAll('g.dc-legend g.dc-legend-item text').nodes()[n]);
     }
-    function legendIcon (n) {
+    function legendIcon(n) {
         return d3.select(chart.selectAll('g.dc-legend g.dc-legend-item rect').nodes()[n]);
     }
-    function legendLine (n) {
+    function legendLine(n) {
         return d3.select(chart.selectAll('g.dc-legend g.dc-legend-item line').nodes()[n]);
     }
 });
-

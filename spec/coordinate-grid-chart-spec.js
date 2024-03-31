@@ -19,7 +19,7 @@ describe('dc.coordinateGridChart', () => {
             .transitionDuration(0)
             .transitionDelay(0)
             .brushOn(false)
-            .margins({top: 20, bottom: 0, right: 10, left: 0})
+            .margins({ top: 20, bottom: 0, right: 10, left: 0 })
             .x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
     });
 
@@ -169,12 +169,13 @@ describe('dc.coordinateGridChart', () => {
 
             it('should add clip path refs to the chart body', () => {
                 chart.selectAll('g.chart-body').each(function () {
-                    expect(d3.select(this).attr('clip-path')).toMatchUrl(`${window.location.href}#coordinate-grid-chart-clip`);
+                    expect(d3.select(this).attr('clip-path')).toMatchUrl(
+                        `${window.location.href}#coordinate-grid-chart-clip`
+                    );
                 });
             });
 
             describe('setting clipPadding(20)', () => {
-
                 beforeEach(() => {
                     chart.clipPadding(20);
                     chart.render();
@@ -190,7 +191,6 @@ describe('dc.coordinateGridChart', () => {
                     const rect = chart.select('defs #coordinate-grid-chart-clip rect');
                     expect(rect.attr('transform')).toMatchTranslate(-20, -20);
                 });
-
             });
 
             describe('with a complex selector', () => {
@@ -204,7 +204,7 @@ describe('dc.coordinateGridChart', () => {
                         .transitionDuration(0)
                         .transitionDelay(0)
                         .brushOn(false)
-                        .margins({top: 20, bottom: 0, right: 10, left: 0})
+                        .margins({ top: 20, bottom: 0, right: 10, left: 0 })
                         .x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
                     chart.render();
                 });
@@ -216,7 +216,10 @@ describe('dc.coordinateGridChart', () => {
 
             describe('with a selector containing brackets', () => {
                 beforeEach(() => {
-                    appendChartID('coordinate-grid').append('div').attr('class', 'chart').attr('foo', '5bar');
+                    appendChartID('coordinate-grid')
+                        .append('div')
+                        .attr('class', 'chart')
+                        .attr('foo', '5bar');
                     chart = new dc.LineChart('#coordinate-grid .chart[foo="5bar"]')
                         .width(500)
                         .height(150)
@@ -225,7 +228,7 @@ describe('dc.coordinateGridChart', () => {
                         .transitionDuration(0)
                         .transitionDelay(0)
                         .brushOn(false)
-                        .margins({top: 20, bottom: 0, right: 10, left: 0})
+                        .margins({ top: 20, bottom: 0, right: 10, left: 0 })
                         .x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
                     chart.render();
                 });
@@ -256,7 +259,9 @@ describe('dc.coordinateGridChart', () => {
                     expect('exception').toBe('thrown');
                 } catch (e) {
                     expect(e instanceof dc.InvalidStateException).toBeTruthy();
-                    expect(e.message).toMatch(/Mandatory attribute chart.x is missing on chart\[#.+\]/);
+                    expect(e.message).toMatch(
+                        /Mandatory attribute chart.x is missing on chart\[#.+\]/
+                    );
                 }
             });
         });
@@ -323,7 +328,9 @@ describe('dc.coordinateGridChart', () => {
                 describe('horizontal grid lines', () => {
                     it('should draw lines associated with the data shown on the y-axis', () => {
                         const nthGridLine = function (n) {
-                            return d3.select(chart.selectAll('.grid-line.horizontal line').nodes()[n]);
+                            return d3.select(
+                                chart.selectAll('.grid-line.horizontal line').nodes()[n]
+                            );
                         };
 
                         expect(chart.selectAll('.grid-line.horizontal line').size()).toBe(7);
@@ -348,7 +355,9 @@ describe('dc.coordinateGridChart', () => {
 
                         it('should draws lines associated with the data using the custom ticks', () => {
                             const nthGridLine = function (n) {
-                                return d3.select(chart.selectAll('.grid-line.horizontal line').nodes()[n]);
+                                return d3.select(
+                                    chart.selectAll('.grid-line.horizontal line').nodes()[n]
+                                );
                             };
 
                             expect(chart.selectAll('.grid-line.horizontal line').size()).toBe(3);
@@ -363,7 +372,9 @@ describe('dc.coordinateGridChart', () => {
                         let opacityValue;
                         beforeEach(done => {
                             chart.on('renderlet', _chart => {
-                                opacityValue = _chart.select('.grid-line.horizontal line').attr('opacity');
+                                opacityValue = _chart
+                                    .select('.grid-line.horizontal line')
+                                    .attr('opacity');
 
                                 done();
                             });
@@ -373,13 +384,14 @@ describe('dc.coordinateGridChart', () => {
                             expect(opacityValue).toBe('0.5');
                         });
                     });
-
                 });
 
                 describe('vertical grid lines', () => {
                     it('should draw lines associated with the data shown on the x-axis', () => {
                         const nthGridLine = function (n) {
-                            return d3.select(chart.selectAll('.grid-line.vertical line').nodes()[n]);
+                            return d3.select(
+                                chart.selectAll('.grid-line.vertical line').nodes()[n]
+                            );
                         };
 
                         expect(chart.selectAll('.grid-line.vertical line').size()).toBe(13);
@@ -398,13 +410,21 @@ describe('dc.coordinateGridChart', () => {
 
                     describe('with custom tick values', () => {
                         beforeEach(() => {
-                            chart.xAxis().tickValues([makeDate(2012, 4, 21), makeDate(2012, 5, 20), makeDate(2012, 6, 1)]);
+                            chart
+                                .xAxis()
+                                .tickValues([
+                                    makeDate(2012, 4, 21),
+                                    makeDate(2012, 5, 20),
+                                    makeDate(2012, 6, 1),
+                                ]);
                             chart.render();
                         });
 
                         it('should draw lines associated with the data using the custom ticks', () => {
                             const nthGridLine = function (n) {
-                                return d3.select(chart.selectAll('.grid-line.vertical line').nodes()[n]);
+                                return d3.select(
+                                    chart.selectAll('.grid-line.vertical line').nodes()[n]
+                                );
                             };
 
                             expect(chart.selectAll('.grid-line.vertical line').size()).toBe(3);
@@ -417,9 +437,7 @@ describe('dc.coordinateGridChart', () => {
 
                     describe('with an ordinal x axis', () => {
                         beforeEach(() => {
-                            chart.x(d3.scaleBand())
-                                .xUnits(dc.units.ordinal)
-                                .render();
+                            chart.x(d3.scaleBand()).xUnits(dc.units.ordinal).render();
                         });
                         it('should render without errors', () => {
                             expect(chart.selectAll('.grid-line.vertical line').size()).toBe(6);
@@ -430,7 +448,9 @@ describe('dc.coordinateGridChart', () => {
                         let opacityValue;
                         beforeEach(done => {
                             chart.on('renderlet', _chart => {
-                                opacityValue = _chart.select('.grid-line.vertical line').attr('opacity');
+                                opacityValue = _chart
+                                    .select('.grid-line.vertical line')
+                                    .attr('opacity');
 
                                 done();
                             });
@@ -468,7 +488,9 @@ describe('dc.coordinateGridChart', () => {
                     });
 
                     it('should display provided label text', () => {
-                        expect(chart.selectAll('text.y-axis-label.y-label').text()).toBe('The Y Axis Label');
+                        expect(chart.selectAll('text.y-axis-label.y-label').text()).toBe(
+                            'The Y Axis Label'
+                        );
                     });
 
                     it('should change the effective width of the chart due to padding', () => {
@@ -476,7 +498,9 @@ describe('dc.coordinateGridChart', () => {
                     });
 
                     it('should position the label to the left of the chart', () => {
-                        expect(chart.selectAll('text.y-axis-label.y-label').attr('transform')).toMatchTransRot(12, 85, -90);
+                        expect(
+                            chart.selectAll('text.y-axis-label.y-label').attr('transform')
+                        ).toMatchTransRot(12, 85, -90);
                     });
 
                     describe('with custom padding', () => {
@@ -516,7 +540,9 @@ describe('dc.coordinateGridChart', () => {
                     });
 
                     it('should display provided label text', () => {
-                        expect(chart.selectAll('text.y-axis-label.y-label').text()).toBe('Right Y Axis Label');
+                        expect(chart.selectAll('text.y-axis-label.y-label').text()).toBe(
+                            'Right Y Axis Label'
+                        );
                     });
 
                     it('should change the effective width of the chart due to padding', () => {
@@ -524,7 +550,9 @@ describe('dc.coordinateGridChart', () => {
                     });
 
                     it('should position the label to the right of the chart', () => {
-                        expect(chart.selectAll('text.y-axis-label.y-label').attr('transform')).toMatchTransRot(488, 85, 90);
+                        expect(
+                            chart.selectAll('text.y-axis-label.y-label').attr('transform')
+                        ).toMatchTransRot(488, 85, 90);
                     });
 
                     describe('with custom padding', () => {
@@ -569,7 +597,6 @@ describe('dc.coordinateGridChart', () => {
                 expect(chart.y().domain()[0]).toBe(0);
                 expect(chart.y().domain()[1]).toBe(0);
             });
-
         });
     });
 
@@ -606,7 +633,7 @@ describe('dc.coordinateGridChart', () => {
             rangeChart.render();
         });
 
-        it('should set our chart as range chart\'s focus chart', () => {
+        it("should set our chart as range chart's focus chart", () => {
             expect(chart.rangeChart().focusChart()).toEqual(chart);
         });
     });
@@ -669,8 +696,10 @@ describe('dc.coordinateGridChart', () => {
             // expect(chart.getBrushSelection()).toEqual(filter);
             const brushSelectionRect = chart.select('g.brush rect.selection');
             expect(brushSelectionRect.attr('x')).toBeCloseTo(chart.x()(filter[0]), 1);
-            expect((+brushSelectionRect.attr('x')) + (+brushSelectionRect.attr('width')))
-                .toBeCloseTo(chart.x()(filter[1]), 1);
+            expect(+brushSelectionRect.attr('x') + +brushSelectionRect.attr('width')).toBeCloseTo(
+                chart.x()(filter[1]),
+                1
+            );
         });
     });
 
@@ -688,7 +717,7 @@ describe('dc.coordinateGridChart', () => {
         });
     });
 
-    describe('rendering for the first time with mouse zoom disabled when it wasn\'t previously enabled', () => {
+    describe("rendering for the first time with mouse zoom disabled when it wasn't previously enabled", () => {
         beforeEach(() => {
             chart.mouseZoomable(false);
             spyOn(chart, '_disableMouseZoom');
@@ -729,7 +758,9 @@ describe('dc.coordinateGridChart', () => {
     describe('zooming', () => {
         let rangeChart, zoomCallback;
 
-        const context = function () { return {chart: chart, zoomCallback: zoomCallback}; };
+        const context = function () {
+            return { chart: chart, zoomCallback: zoomCallback };
+        };
 
         beforeEach(() => {
             zoomCallback = jasmine.createSpy();
@@ -760,7 +791,7 @@ describe('dc.coordinateGridChart', () => {
             itActsLikeItZoomed(context);
         });
 
-        function itActsLikeItZoomed (ctx) {
+        function itActsLikeItZoomed(ctx) {
             describe('(shared things that happen on zooming)', () => {
                 let _chart, _zoomCallback;
                 beforeEach(() => {
@@ -779,21 +810,24 @@ describe('dc.coordinateGridChart', () => {
 
                 it('should be rescaled', () => {
                     const domain = _chart.x().domain();
-                    expect(_chart.xUnitCount()).toEqual(dc.units.integers(domain[0], domain[1], domain));
+                    expect(_chart.xUnitCount()).toEqual(
+                        dc.units.integers(domain[0], domain[1], domain)
+                    );
                 });
 
                 it('should redraw itself', () => {
                     expect(_chart.redraw).toHaveBeenCalled();
                 });
 
-                it('should update its range chart\'s filter', () => {
-                    expect(dc.utils.arraysEqual(_chart.rangeChart().filter(), _chart.filter())).toEqual(true);
+                it("should update its range chart's filter", () => {
+                    expect(
+                        dc.utils.arraysEqual(_chart.rangeChart().filter(), _chart.filter())
+                    ).toEqual(true);
                 });
 
                 it('should fire custom zoom listeners', () => {
                     expect(_zoomCallback).toHaveBeenCalled();
                 });
-
             });
         }
     });
@@ -887,7 +921,6 @@ describe('dc.coordinateGridChart', () => {
             chart.focus([makeDate(2012, 2, 20), makeDate(2012, 9, 15)]);
             expect(chart.x().domain()).toEqual(chart.xOriginalDomain());
         });
-
     });
 
     describe('with zoom restriction disabled', () => {
@@ -933,7 +966,7 @@ describe('dc.coordinateGridChart', () => {
         });
     });
 
-    function buildRangeChart () {
+    function buildRangeChart() {
         const rangeId = 'range-chart';
         appendChartID(rangeId);
         return new dc.LineChart(`#${rangeId}`)
@@ -942,11 +975,27 @@ describe('dc.coordinateGridChart', () => {
             .x(d3.scaleUtc().domain([makeDate(2012, 5, 20), makeDate(2012, 6, 15)]));
     }
 
-    function doubleClick (_chart) {
-        const centerX = _chart.root().node().clientLeft + (_chart.width() / 2);
-        const centerY = _chart.root().node().clientTop + (_chart.height() / 2);
+    function doubleClick(_chart) {
+        const centerX = _chart.root().node().clientLeft + _chart.width() / 2;
+        const centerY = _chart.root().node().clientTop + _chart.height() / 2;
         const event = document.createEvent('MouseEvents');
-        event.initMouseEvent('dblclick', true, true, window, centerX, centerY, centerX, centerY, 0, false, false, false, false, 0, null);
+        event.initMouseEvent(
+            'dblclick',
+            true,
+            true,
+            window,
+            centerX,
+            centerY,
+            centerX,
+            centerY,
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            null
+        );
         _chart.root().node().dispatchEvent(event);
     }
 });

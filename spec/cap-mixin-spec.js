@@ -14,8 +14,7 @@ describe('dc.capMixin', () => {
         appendChartID(id);
         mixin = new CapMixinTester(`#${id}`);
 
-        mixin.dimension(dimension)
-            .group(group);
+        mixin.dimension(dimension).group(group);
     });
 
     describe('with no capping and default ordering', () => {
@@ -152,4 +151,3 @@ describe('dc.capMixin', () => {
         });
     });
 });
-

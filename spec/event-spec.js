@@ -34,8 +34,6 @@ describe('dc event engine', () => {
             jasmine.clock().tick(5);
             expect(times).toEqual(1);
         });
-        afterEach(() => {
-        });
+        afterEach(() => {});
     });
 });
-

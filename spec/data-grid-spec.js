@@ -20,7 +20,10 @@ describe('dc.dataGrid', () => {
             .size(3)
             .sortBy(d => d.id)
             .order(d3.descending)
-            .html(d => `<div id='id_${d.id}' class='${d.countrycode} ${d.region}'>${d.state}:${d.value}</div>`);
+            .html(
+                d =>
+                    `<div id='id_${d.id}' class='${d.countrycode} ${d.region}'>${d.state}:${d.value}</div>`
+            );
         chart.render();
     });
 
@@ -41,7 +44,9 @@ describe('dc.dataGrid', () => {
             expect(chart.order()).toBe(d3.descending);
         });
         it('sets the group label', () => {
-            expect(chart.selectAll('.dc-grid-group h1.dc-grid-label').nodes()[0].innerHTML).toEqual('Data Grid');
+            expect(chart.selectAll('.dc-grid-group h1.dc-grid-label').nodes()[0].innerHTML).toEqual(
+                'Data Grid'
+            );
         });
         it('treats group as synonym of section', () => {
             expect(chart.group()).toEqual(chart.section());
@@ -61,9 +66,15 @@ describe('dc.dataGrid', () => {
             expect(chart.selectAll('.dc-grid-item div#id_3').nodes().length).toEqual(1);
         });
         it('creates div content', () => {
-            expect(chart.selectAll('.dc-grid-item div').nodes()[0].innerHTML).toEqual('Mississippi:44');
-            expect(chart.selectAll('.dc-grid-item div').nodes()[1].innerHTML).toEqual('Mississippi:33');
-            expect(chart.selectAll('.dc-grid-item div').nodes()[2].innerHTML).toEqual('Delaware:33');
+            expect(chart.selectAll('.dc-grid-item div').nodes()[0].innerHTML).toEqual(
+                'Mississippi:44'
+            );
+            expect(chart.selectAll('.dc-grid-item div').nodes()[1].innerHTML).toEqual(
+                'Mississippi:33'
+            );
+            expect(chart.selectAll('.dc-grid-item div').nodes()[2].innerHTML).toEqual(
+                'Delaware:33'
+            );
         });
     });
 
@@ -125,4 +136,3 @@ describe('dc.dataGrid', () => {
         countryDimension.filterAll();
     });
 });
-

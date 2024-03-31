@@ -35,7 +35,9 @@ describe('dc utils', () => {
             expect(printer([10.124244, 30.635623])).toEqual('[10.12 -> 30.64]');
         });
         it('print date range', () => {
-            expect(printer([makeDate(2012, 1, 1), makeDate(2012, 1, 15)])).toEqual('[02/01/2012 -> 02/15/2012]');
+            expect(printer([makeDate(2012, 1, 1), makeDate(2012, 1, 15)])).toEqual(
+                '[02/01/2012 -> 02/15/2012]'
+            );
         });
         it('print single element array', () => {
             expect(printer([makeDate(2012, 1, 1)])).toEqual('02/01/2012');
@@ -47,13 +49,15 @@ describe('dc utils', () => {
             expect(printer(0)).toEqual('0');
         });
         it('print a multi-element array', () => {
-            expect(printer(['this', 'that', 'and', 'the', 'other'])).toEqual('[this -> that -> and -> the -> other]');
+            expect(printer(['this', 'that', 'and', 'the', 'other'])).toEqual(
+                '[this -> that -> and -> the -> other]'
+            );
         });
     });
 
     describe('dc.utils.nameToId', () => {
         it('id should be escaped properly', () => {
-            expect(dc.utils.nameToId('St. John\'s')).toEqual('st_johns');
+            expect(dc.utils.nameToId("St. John's")).toEqual('st_johns');
         });
     });
 
@@ -64,7 +68,7 @@ describe('dc utils', () => {
         });
         it('should be able to add days', () => {
             const date = add(makeDate(2012, 0, 1), 10);
-            expect(date.toString()).toEqual((makeDate(2012, 0, 11)).toString());
+            expect(date.toString()).toEqual(makeDate(2012, 0, 11).toString());
         });
         it('should be able to add numbers', () => {
             const num = add(10, 10);
@@ -102,7 +106,7 @@ describe('dc utils', () => {
         });
         it('should be able to subtract dates', () => {
             const date = subtract(makeDate(2012, 0, 11), 10);
-            expect(date.toString()).toEqual((makeDate(2012, 0, 1)).toString());
+            expect(date.toString()).toEqual(makeDate(2012, 0, 1).toString());
         });
         it('should be able to subtract numbers', () => {
             const num = subtract(10, 10);

@@ -2,10 +2,10 @@
 describe('dc.rowChart', () => {
     let id, chart;
     let data, dimension, nvdimension;
-    const positiveGroupHolder = {groupType: 'positive signed'};
-    const negativeGroupHolder = {groupType: 'negative signed'};
-    const mixedGroupHolder = {groupType: 'mixed signed'};
-    const largerGroupHolder = {groupType: 'larger'};
+    const positiveGroupHolder = { groupType: 'positive signed' };
+    const negativeGroupHolder = { groupType: 'negative signed' };
+    const mixedGroupHolder = { groupType: 'mixed signed' };
+    const largerGroupHolder = { groupType: 'larger' };
     let statusDimension, statusMultiGroup;
 
     beforeEach(() => {
@@ -38,22 +38,30 @@ describe('dc.rowChart', () => {
                 return p;
             },
             //init
-            () => ({count: 0, total: 0, getTotal: function () { return this.total; }})
+            () => ({
+                count: 0,
+                total: 0,
+                getTotal: function () {
+                    return this.total;
+                },
+            })
         );
 
         id = 'row-chart';
         appendChartID(id);
 
         chart = new dc.RowChart(`#${id}`);
-        chart.dimension(dimension)
-            .width(600).height(200).gap(10)
-            .transitionDuration(0);
+        chart.dimension(dimension).width(600).height(200).gap(10).transitionDuration(0);
     });
 
     describe('enabling the chart title and label with a value accessor', () => {
         beforeEach(() => {
             chart.group(mixedGroupHolder.group);
-            chart.valueAccessor(d => d.value + 100).renderLabel(true).renderTitle(true).render();
+            chart
+                .valueAccessor(d => d.value + 100)
+                .renderLabel(true)
+                .renderTitle(true)
+                .render();
         });
 
         it('should use the default function to dynamically generate the label', () => {
@@ -108,32 +116,40 @@ describe('dc.rowChart', () => {
 
     describe('row chart cap', () => {
         beforeEach(() => {
-            chart.dimension(statusDimension)
-                .group(statusMultiGroup)
-                .othersLabel('small');
+            chart.dimension(statusDimension).group(statusMultiGroup).othersLabel('small');
             return chart;
         });
         describe('with custom valueAccessor', () => {
             // statusMultiGroup has
             // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
             beforeEach(() => {
-                chart.dimension(statusDimension).group(statusMultiGroup)
+                chart
+                    .dimension(statusDimension)
+                    .group(statusMultiGroup)
                     .valueAccessor(d => d.value.total)
                     .ordering(d => -d.value.total)
                     .render();
                 return chart;
             });
             it('correct values, no others row', () => {
-                expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                    .toEqual(['F: 220', 'T: 198']);
+                expect(
+                    chart
+                        .selectAll('title')
+                        .nodes()
+                        .map(t => d3.select(t).text())
+                ).toEqual(['F: 220', 'T: 198']);
             });
             describe('with cap(1)', () => {
                 beforeEach(() => {
                     chart.cap(1).render();
                 });
                 it('correct values, others row', () => {
-                    expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                        .toEqual(['F: 220', 'small: 198']);
+                    expect(
+                        chart
+                            .selectAll('title')
+                            .nodes()
+                            .map(t => d3.select(t).text())
+                    ).toEqual(['F: 220', 'small: 198']);
                 });
             });
         });
@@ -141,29 +157,39 @@ describe('dc.rowChart', () => {
             // statusMultiGroup has
             // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
             beforeEach(() => {
-                chart.dimension(statusDimension).group(statusMultiGroup)
+                chart
+                    .dimension(statusDimension)
+                    .group(statusMultiGroup)
                     .valueAccessor(d => d.value.getTotal())
                     .ordering(d => -d.value.getTotal())
                     .render();
                 return chart;
             });
             it('correct values, no others row', () => {
-                expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                    .toEqual(['F: 220', 'T: 198']);
+                expect(
+                    chart
+                        .selectAll('title')
+                        .nodes()
+                        .map(t => d3.select(t).text())
+                ).toEqual(['F: 220', 'T: 198']);
             });
             describe('with cap(1)', () => {
                 beforeEach(() => {
                     chart.cap(1).render();
                 });
                 it('correct values, others row', () => {
-                    expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                        .toEqual(['F: 220', 'small: 198']);
+                    expect(
+                        chart
+                            .selectAll('title')
+                            .nodes()
+                            .map(t => d3.select(t).text())
+                    ).toEqual(['F: 220', 'small: 198']);
                 });
             });
         });
     });
 
-    function itShouldBehaveLikeARowChartWithGroup (groupHolder, N, xAxisTicks) {
+    function itShouldBehaveLikeARowChartWithGroup(groupHolder, N, xAxisTicks) {
         describe(`for ${groupHolder.groupType} data`, () => {
             beforeEach(() => {
                 chart.group(groupHolder.group);
@@ -190,8 +216,9 @@ describe('dc.rowChart', () => {
 
                 it('should fill each row rect with pre-defined colors', () => {
                     for (let i = 0; i < N; i++) {
-                        expect(d3.select(chart.selectAll('g.dc_row rect').nodes()[i]).attr('fill'))
-                            .toMatchColor(dc.config.defaultColors()[i]);
+                        expect(
+                            d3.select(chart.selectAll('g.dc_row rect').nodes()[i]).attr('fill')
+                        ).toMatchColor(dc.config.defaultColors()[i]);
                     }
                 });
 
@@ -210,15 +237,17 @@ describe('dc.rowChart', () => {
                         rows = chart.selectAll('g.dc_row rect');
                     });
 
-                    function itShouldVerticallyCenterLabelWithinRow (i) {
+                    function itShouldVerticallyCenterLabelWithinRow(i) {
                         it(`should place label ${i} within row ${i}`, () => {
                             const rowpos = rows.nodes()[i].getBoundingClientRect(),
                                 textpos = labels.nodes()[i].getBoundingClientRect();
-                            expect((textpos.top + textpos.bottom) / 2)
-                                .toBeWithinDelta((rowpos.top + rowpos.bottom) / 2, 2);
+                            expect((textpos.top + textpos.bottom) / 2).toBeWithinDelta(
+                                (rowpos.top + rowpos.bottom) / 2,
+                                2
+                            );
                         });
                     }
-                    for (let i = 0; i < N ; ++i) {
+                    for (let i = 0; i < N; ++i) {
                         itShouldVerticallyCenterLabelWithinRow(i);
                     }
                 });
@@ -342,12 +371,16 @@ describe('dc.rowChart', () => {
 
                 it('should order values when by value', () => {
                     chart.ordering(dc.pluck('value'));
-                    expect(chart.data().map(dc.pluck('value')).sort(d3.ascending)).toEqual(chart.data().map(dc.pluck('value')));
+                    expect(chart.data().map(dc.pluck('value')).sort(d3.ascending)).toEqual(
+                        chart.data().map(dc.pluck('value'))
+                    );
                 });
 
                 it('should order keys when by keys', () => {
                     chart.ordering(dc.pluck('key'));
-                    expect(chart.data().map(dc.pluck('key')).sort(d3.ascending)).toEqual(chart.data().map(dc.pluck('key')));
+                    expect(chart.data().map(dc.pluck('key')).sort(d3.ascending)).toEqual(
+                        chart.data().map(dc.pluck('key'))
+                    );
                 });
             });
 
@@ -373,7 +406,11 @@ describe('dc.rowChart', () => {
                 // I can't seem to find any way to detect invalid setAttribute calls
                 beforeEach(() => {
                     chart.render();
-                    chart.group({all: function () { return []; }});
+                    chart.group({
+                        all: function () {
+                            return [];
+                        },
+                    });
                     chart.redraw();
                     chart.group(groupHolder.group);
                     chart.redraw();
@@ -441,14 +478,15 @@ describe('dc.rowChart', () => {
             if (xAxisTicks) {
                 describe('with elasticX', () => {
                     beforeEach(() => {
-                        chart.elasticX(true)
-                            .xAxis().ticks(3);
+                        chart.elasticX(true).xAxis().ticks(3);
 
                         chart.render();
                     });
 
                     it('should generate x axis domain dynamically', () => {
-                        const nthText = function (n) { return d3.select(chart.selectAll('g.axis .tick text').nodes()[n]); };
+                        const nthText = function (n) {
+                            return d3.select(chart.selectAll('g.axis .tick text').nodes()[n]);
+                        };
 
                         for (let i = 0; i < xAxisTicks.length; i++) {
                             expect(nthText(i).text()).toBe(xAxisTicks[i]);

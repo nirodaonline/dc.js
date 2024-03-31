@@ -10,20 +10,22 @@ describe('Dynamic data addition in crossfilter', () => {
         moreData = loadDateFixture2();
     });
 
-    function occurrences (str, value) {
-        return (str.split(value)).length - 1;
+    function occurrences(str, value) {
+        return str.split(value).length - 1;
     }
 
     describe('pie chart slice addition', () => {
         let valueDimension, valueGroup;
         let chart;
 
-        function buildPieChart (id) {
+        function buildPieChart(id) {
             const div = appendChartID(id);
             div.append('a').attr('class', 'reset').style('display', 'none');
             div.append('span').attr('class', 'filter').style('display', 'none');
             const pieChart = new dc.PieChart(`#${id}`);
-            pieChart.dimension(valueDimension).group(valueGroup)
+            pieChart
+                .dimension(valueDimension)
+                .group(valueGroup)
                 .width(width)
                 .height(height)
                 .radius(radius)
@@ -50,11 +52,17 @@ describe('Dynamic data addition in crossfilter', () => {
             expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual('11');
         });
         it('pie chart slices should be in numerical order', () => {
-            expect(chart.selectAll('text.pie-slice').data().map(slice => slice.data.key))
-                .toEqual(['11','22','33','44','55','66','76']);
+            expect(
+                chart
+                    .selectAll('text.pie-slice')
+                    .data()
+                    .map(slice => slice.data.key)
+            ).toEqual(['11', '22', '33', '44', '55', '66', '76']);
         });
         it('default function should be used to dynamically generate title', () => {
-            expect(d3.select(chart.selectAll('g.pie-slice title').nodes()[0]).text()).toEqual('11: 1');
+            expect(d3.select(chart.selectAll('g.pie-slice title').nodes()[0]).text()).toEqual(
+                '11: 1'
+            );
         });
         afterEach(() => {
             valueDimension.filterAll();
@@ -64,11 +72,14 @@ describe('Dynamic data addition in crossfilter', () => {
         let timeDimension, timeGroup;
         let chart;
 
-        function buildLineChart (id) {
+        function buildLineChart(id) {
             appendChartID(id);
             const lineChart = new dc.LineChart(`#${id}`);
-            lineChart.dimension(timeDimension).group(timeGroup)
-                .width(width).height(height)
+            lineChart
+                .dimension(timeDimension)
+                .group(timeGroup)
+                .width(width)
+                .height(height)
                 .x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]))
                 .transitionDuration(0)
                 .xUnits(d3.utcDays)

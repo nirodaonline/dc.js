@@ -1,7 +1,14 @@
 /* global appendChartID, loadDateFixture, makeDate, simulateChartBrushing */
 describe('dc.compositeChart', () => {
-    let id, chart, data, dateDimension, dateValueSumGroup, dateValueNegativeSumGroup,
-        dateIdSumGroup, dateIdNegativeSumGroup, dateGroup;
+    let id,
+        chart,
+        data,
+        dateDimension,
+        dateValueSumGroup,
+        dateValueNegativeSumGroup,
+        dateIdSumGroup,
+        dateIdNegativeSumGroup,
+        dateGroup;
 
     beforeEach(() => {
         data = crossfilter(loadDateFixture());
@@ -35,8 +42,7 @@ describe('dc.compositeChart', () => {
                     .stack(dateValueSumGroup, 'Date Value Group Line 1')
                     .stack(dateValueSumGroup, 'Date Value Group Line 2')
                     .hidableStacks(true),
-                new dc.LineChart(chart)
-                    .group(dateGroup, 'Date Group')
+                new dc.LineChart(chart).group(dateGroup, 'Date Group'),
             ]);
     });
 
@@ -185,14 +191,16 @@ describe('dc.compositeChart', () => {
             chart.selectAll('g.sub path.line').each(function (d, i) {
                 switch (i) {
                     case 0:
-                        expect(d3.select(this).attr('d'))
-                            .toMatchPath('M24.137931034482758,110L91.72413793103448,108L101.37931034482757,103L202.75862068965515,' +
-                            '108L246.20689655172413,104L395.8620689655172,105');
+                        expect(d3.select(this).attr('d')).toMatchPath(
+                            'M24.137931034482758,110L91.72413793103448,108L101.37931034482757,103L202.75862068965515,' +
+                                '108L246.20689655172413,104L395.8620689655172,105'
+                        );
                         break;
                     case 1:
-                        expect(d3.select(this).attr('d'))
-                            .toMatchPath('M24.137931034482758,92L91.72413793103448,82L101.37931034482757,52L202.75862068965515,' +
-                            '91L246.20689655172413,83L395.8620689655172,75');
+                        expect(d3.select(this).attr('d')).toMatchPath(
+                            'M24.137931034482758,92L91.72413793103448,82L101.37931034482757,52L202.75862068965515,' +
+                                '91L246.20689655172413,83L395.8620689655172,75'
+                        );
                         break;
                 }
             });
@@ -244,15 +252,19 @@ describe('dc.compositeChart', () => {
             it('should have clip path refs', () => {
                 expect(chart.selectAll('g.chart-body').size()).not.toBe(0);
                 chart.selectAll('g.chart-body').each(function () {
-                    expect(d3.select(this).attr('clip-path')).toMatchUrl(`${window.location.href}#composite-chart-clip`);
+                    expect(d3.select(this).attr('clip-path')).toMatchUrl(
+                        `${window.location.href}#composite-chart-clip`
+                    );
                 });
             });
         });
 
         describe('the chart brush', () => {
-
             it('should be positioned with the chart left margin', () => {
-                expect(chart.select('g.brush').attr('transform')).toMatchTranslate(chart.margins().left, 10);
+                expect(chart.select('g.brush').attr('transform')).toMatchTranslate(
+                    chart.margins().left,
+                    10
+                );
             });
 
             it('should have a resize handle', () => {
@@ -260,15 +272,17 @@ describe('dc.compositeChart', () => {
                 expect(selectAll.size()).toBe(2);
                 selectAll.each(function (d, i) {
                     if (i === 0) {
-                        expect(d3.select(this).attr('d'))
-                            .toMatchPath('M-0.5,36.666666666666664A6,6 0 0 0 -6.5,42.666666666666664V67.33333333333333A6,' +
+                        expect(d3.select(this).attr('d')).toMatchPath(
+                            'M-0.5,36.666666666666664A6,6 0 0 0 -6.5,42.666666666666664V67.33333333333333A6,' +
                                 '6 0 0 0 -0.5,73.33333333333333ZM-2.5,44.666666666666664V65.33333333333333M-4.5,' +
-                                '44.666666666666664V65.33333333333333');
+                                '44.666666666666664V65.33333333333333'
+                        );
                     } else {
-                        expect(d3.select(this).attr('d'))
-                            .toMatchPath('M0.5,36.666666666666664A6,6 0 0 1 6.5,42.666666666666664V67.33333333333333A6,' +
+                        expect(d3.select(this).attr('d')).toMatchPath(
+                            'M0.5,36.666666666666664A6,6 0 0 1 6.5,42.666666666666664V67.33333333333333A6,' +
                                 '6 0 0 1 0.5,73.33333333333333ZM2.5,44.666666666666664V65.33333333333333M4.5,' +
-                                '44.666666666666664V65.33333333333333');
+                                '44.666666666666664V65.33333333333333'
+                        );
                     }
                 });
             });
@@ -355,8 +369,10 @@ describe('dc.compositeChart', () => {
             });
 
             it('should generate legend labels with their associated group text', () => {
-                function legendText (n) {
-                    return d3.select(chart.selectAll('g.dc-legend g.dc-legend-item text').nodes()[n]).text();
+                function legendText(n) {
+                    return d3
+                        .select(chart.selectAll('g.dc-legend g.dc-legend-item text').nodes()[n])
+                        .text();
                 }
                 expect(legendText(0)).toBe('Date Value Group Bar');
                 expect(legendText(1)).toBe('Date ID Group');
@@ -377,11 +393,17 @@ describe('dc.compositeChart', () => {
             });
 
             it('should hide hidable child stacks', () => {
-                const dateValueGroupLine2 = d3.select(chart.selectAll('g.dc-legend g.dc-legend-item').nodes()[3]);
+                const dateValueGroupLine2 = d3.select(
+                    chart.selectAll('g.dc-legend g.dc-legend-item').nodes()[3]
+                );
 
                 dateValueGroupLine2.on('click')({}, dateValueGroupLine2.datum());
                 expect(dateValueGroupLine2.text()).toBe('Date Value Group Line 2');
-                expect(d3.select(chart.selectAll('g.dc-legend g.dc-legend-item').nodes()[3]).classed('fadeout')).toBeTruthy();
+                expect(
+                    d3
+                        .select(chart.selectAll('g.dc-legend g.dc-legend-item').nodes()[3])
+                        .classed('fadeout')
+                ).toBeTruthy();
                 expect(chart.selectAll('path.line').size()).toEqual(3);
             });
         });
@@ -443,7 +465,7 @@ describe('dc.compositeChart', () => {
                     p.value -= +v.value;
                     return p;
                 },
-                () => ({count: 0, value: 0})
+                () => ({ count: 0, value: 0 })
             );
             chart
                 .brushOn(false)
@@ -471,9 +493,9 @@ describe('dc.compositeChart', () => {
                                 value = 0;
                             }
                             return `Value: ${d3.format('d')(value)}`;
-
-                        })
-                ]).render();
+                        }),
+                ])
+                .render();
         });
 
         it('should set a tooltip based on the shared group', () => {
@@ -501,13 +523,12 @@ describe('dc.compositeChart', () => {
             beforeEach(() => {
                 chart
                     .compose([
-                        new dc.BarChart(chart)
-                            .group(dateValueSumGroup, 'Date Value Group'),
-                        rightChart = new dc.LineChart(chart)
+                        new dc.BarChart(chart).group(dateValueSumGroup, 'Date Value Group'),
+                        (rightChart = new dc.LineChart(chart)
                             .group(dateIdSumGroup, 'Date ID Group')
                             .stack(dateValueSumGroup, 'Date Value Group')
                             .stack(dateValueSumGroup, 'Date Value Group')
-                            .useRightYAxis(true)
+                            .useRightYAxis(true)),
                     ])
                     .render();
             });
@@ -524,7 +545,7 @@ describe('dc.compositeChart', () => {
                 expect(chart.selectAll('.y-axis-label.yr-label').empty()).toBeFalsy();
             });
 
-            it('should scale "right" charts according to the right y-axis' , () => {
+            it('should scale "right" charts according to the right y-axis', () => {
                 expect(rightChart.y()).toBe(chart.rightY());
             });
 
@@ -563,9 +584,10 @@ describe('dc.compositeChart', () => {
         describe('when composing charts with just a left axis', () => {
             beforeEach(() => {
                 chart.yAxis().ticks(4);
-                chart.compose([
-                    new dc.LineChart(chart).group(dateGroup)
-                ]).renderHorizontalGridLines(true).render();
+                chart
+                    .compose([new dc.LineChart(chart).group(dateGroup)])
+                    .renderHorizontalGridLines(true)
+                    .render();
             });
 
             it('should only render a left y axis', () => {
@@ -580,9 +602,9 @@ describe('dc.compositeChart', () => {
 
         describe('when composing charts with just a right axis', () => {
             beforeEach(() => {
-                chart.compose([
-                    new dc.LineChart(chart).group(dateGroup).useRightYAxis(true)
-                ]).renderHorizontalGridLines(true);
+                chart
+                    .compose([new dc.LineChart(chart).group(dateGroup).useRightYAxis(true)])
+                    .renderHorizontalGridLines(true);
                 chart.rightYAxis().ticks(7);
                 chart.render();
             });
@@ -602,24 +624,24 @@ describe('dc.compositeChart', () => {
             beforeEach(() => {
                 chart
                     .compose([
-                        leftChart = new dc.BarChart(chart)
-                            .group(dateValueNegativeSumGroup, 'Date Value Group'),
-                        rightChart = new dc.LineChart(chart)
+                        (leftChart = new dc.BarChart(chart).group(
+                            dateValueNegativeSumGroup,
+                            'Date Value Group'
+                        )),
+                        (rightChart = new dc.LineChart(chart)
                             .group(dateIdSumGroup, 'Date ID Group')
-                            .useRightYAxis(true)
+                            .useRightYAxis(true)),
                     ])
                     .render();
             });
 
-            it('the axis baselines shouldn\'t match', () => {
+            it("the axis baselines shouldn't match", () => {
                 expect(leftChart.y()(0)).not.toEqual(rightChart.y()(0));
             });
 
             describe('with alignYAxes', () => {
                 beforeEach(() => {
-                    chart.alignYAxes(true)
-                        .elasticY(true)
-                        .render();
+                    chart.alignYAxes(true).elasticY(true).render();
                 });
                 it('the axis baselines should match', () => {
                     expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
@@ -635,24 +657,21 @@ describe('dc.compositeChart', () => {
             beforeEach(() => {
                 chart
                     .compose([
-                        leftChart = new dc.BarChart(chart)
-                            .group(dateIdSumGroup, 'Date ID Group'),
-                        rightChart = new dc.LineChart(chart)
+                        (leftChart = new dc.BarChart(chart).group(dateIdSumGroup, 'Date ID Group')),
+                        (rightChart = new dc.LineChart(chart)
                             .group(dateValueNegativeSumGroup, 'Date Value Group')
-                            .useRightYAxis(true)
+                            .useRightYAxis(true)),
                     ])
                     .render();
             });
 
-            it('the axis baselines shouldn\'t match', () => {
+            it("the axis baselines shouldn't match", () => {
                 expect(leftChart.y()(0)).not.toEqual(rightChart.y()(0));
             });
 
             describe('with alignYAxes', () => {
                 beforeEach(() => {
-                    chart.alignYAxes(true)
-                        .elasticY(true)
-                        .render();
+                    chart.alignYAxes(true).elasticY(true).render();
                 });
                 it('the axis baselines should match', () => {
                     expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
@@ -668,11 +687,13 @@ describe('dc.compositeChart', () => {
             beforeEach(() => {
                 chart
                     .compose([
-                        leftChart = new dc.BarChart(chart)
-                            .group(dateIdNegativeSumGroup, 'Date ID Group'),
-                        rightChart = new dc.LineChart(chart)
+                        (leftChart = new dc.BarChart(chart).group(
+                            dateIdNegativeSumGroup,
+                            'Date ID Group'
+                        )),
+                        (rightChart = new dc.LineChart(chart)
                             .group(dateValueNegativeSumGroup, 'Date Value Group')
-                            .useRightYAxis(true)
+                            .useRightYAxis(true)),
                     ])
                     .render();
             });
@@ -684,9 +705,7 @@ describe('dc.compositeChart', () => {
 
             describe('with alignYAxes', () => {
                 beforeEach(() => {
-                    chart.alignYAxes(true)
-                        .elasticY(true)
-                        .render();
+                    chart.alignYAxes(true).elasticY(true).render();
                 });
                 it('the axis baselines should match', () => {
                     expect(leftChart.y()(0)).toEqual(rightChart.y()(0));
@@ -696,7 +715,7 @@ describe('dc.compositeChart', () => {
                 });
             });
         });
-        function plotHeight (_chart) {
+        function plotHeight(_chart) {
             return _chart.y()(_chart.yAxisMax()) - _chart.y()(_chart.yAxisMin());
         }
     });
@@ -719,13 +738,14 @@ describe('dc.compositeChart', () => {
             chart
                 .dimension(scatterDimension)
                 .group(scatterGroup)
-                .x(d3.scaleLinear().domain([0,70]))
+                .x(d3.scaleLinear().domain([0, 70]))
                 .brushOn(true)
                 .compose([
                     new dc.ScatterPlot(chart),
                     new dc.ScatterPlot(chart),
-                    new dc.LineChart(chart).dimension(lineDimension).group(lineGroup)
-                ]).render();
+                    new dc.LineChart(chart).dimension(lineDimension).group(lineGroup),
+                ])
+                .render();
         });
 
         describe('brushing', () => {
@@ -798,7 +818,7 @@ describe('dc.compositeChart', () => {
 
             chart.width(1000);
             chart.height(500);
-            chart.margins({top: 100, right: 100, bottom: 100, left: 100});
+            chart.margins({ top: 100, right: 100, bottom: 100, left: 100 });
         });
 
         it('should set width on child charts', () => {
@@ -858,9 +878,7 @@ describe('dc.compositeChart', () => {
             chart.render();
             expect(chart.resizing()).toBe(false);
 
-            chart.compose([
-                new dc.LineChart(chart).group(dateGroup)
-            ]);
+            chart.compose([new dc.LineChart(chart).group(dateGroup)]);
         });
 
         it('should rescale child charts', () => {

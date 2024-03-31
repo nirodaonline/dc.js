@@ -3,8 +3,8 @@ describe('dc.pieChart', () => {
     const width = 200;
     const height = 200;
     const radius = 100;
-    const defaultCenter = {x: width / 2, y: height / 2};
-    const newCenter = {x: 101, y: 99};
+    const defaultCenter = { x: width / 2, y: height / 2 };
+    const newCenter = { x: 101, y: 99 };
     const innerRadius = 30;
     let data, valueDimension, valueGroup;
     let regionDimension, statusDimension;
@@ -34,16 +34,24 @@ describe('dc.pieChart', () => {
                 return p;
             },
             //init
-            () => ({count: 0, total: 0, getTotal: function () { return this.total; }})
+            () => ({
+                count: 0,
+                total: 0,
+                getTotal: function () {
+                    return this.total;
+                },
+            })
         );
     });
 
-    function buildChart (id) {
+    function buildChart(id) {
         const div = appendChartID(id);
         div.append('a').attr('class', 'reset').style('display', 'none');
         div.append('span').attr('class', 'filter').style('display', 'none');
         const chart = new dc.PieChart(`#${id}`);
-        chart.dimension(valueDimension).group(valueGroup)
+        chart
+            .dimension(valueDimension)
+            .group(valueGroup)
             .width(width)
             .height(height)
             .radius(radius)
@@ -52,12 +60,14 @@ describe('dc.pieChart', () => {
         return chart;
     }
 
-    function buildCountryChart (id) {
+    function buildCountryChart(id) {
         const div = appendChartID(id);
         div.append('a').attr('class', 'reset').style('display', 'none');
         div.append('span').attr('class', 'filter').style('display', 'none');
         const chart = new dc.PieChart(`#${id}`);
-        chart.dimension(countryDimension).group(countryGroup)
+        chart
+            .dimension(countryDimension)
+            .group(countryGroup)
             .width(width)
             .height(height)
             .radius(radius)
@@ -67,8 +77,7 @@ describe('dc.pieChart', () => {
     }
 
     describe('generation', () => {
-        let chart,
-            countryChart;
+        let chart, countryChart;
 
         beforeEach(() => {
             chart = buildChart('pie-chart-age');
@@ -121,7 +130,10 @@ describe('dc.pieChart', () => {
             expect(chart.select('svg g').empty()).toBeFalsy();
         });
         it('root g should be translated to center', () => {
-            expect(chart.select('svg g').attr('transform')).toMatchTranslate(defaultCenter.x, defaultCenter.y);
+            expect(chart.select('svg g').attr('transform')).toMatchTranslate(
+                defaultCenter.x,
+                defaultCenter.y
+            );
         });
         it('slice g should be created with class', () => {
             expect(chart.selectAll('svg g g.pie-slice').data().length).toEqual(5);
@@ -147,16 +159,20 @@ describe('dc.pieChart', () => {
         it('slice path fill should be set correctly', () => {
             const numSlices = 5;
             for (let i = 0; i < numSlices; i++) {
-                expect(d3.select(chart.selectAll('g.pie-slice path').nodes()[i]).attr('fill'))
-                    .toMatchColor(dc.config.defaultColors()[i]);
+                expect(
+                    d3.select(chart.selectAll('g.pie-slice path').nodes()[i]).attr('fill')
+                ).toMatchColor(dc.config.defaultColors()[i]);
             }
         });
         it('slice label should be created', () => {
             expect(chart.selectAll('svg text.pie-slice').data().length).toEqual(5);
         });
         it('slice label transform to centroid', () => {
-            expect(chart.selectAll('svg g text.pie-slice').attr('transform'))
-                .toMatchTranslate(52.58610463437159, -38.20604139901075, 3);
+            expect(chart.selectAll('svg g text.pie-slice').attr('transform')).toMatchTranslate(
+                52.58610463437159,
+                -38.20604139901075,
+                3
+            );
         });
         it('slice label text should be set', () => {
             chart.selectAll('svg g text.pie-slice').call(p => {
@@ -179,31 +195,30 @@ describe('dc.pieChart', () => {
         });
         describe('center positioning', () => {
             beforeEach(() => {
-                chart
-                    .cx(newCenter.x)
-                    .cy(newCenter.y)
-                    .render();
+                chart.cx(newCenter.x).cy(newCenter.y).render();
                 return chart;
             });
             afterEach(() => {
-                chart
-                    .cx(defaultCenter.x)
-                    .cy(defaultCenter.y)
-                    .render();
+                chart.cx(defaultCenter.x).cy(defaultCenter.y).render();
                 return chart;
             });
             it(`root g should be translated to ${newCenter.x},${newCenter.y}`, () => {
-                expect(chart.select('svg g').attr('transform')).toMatchTranslate(newCenter.x, newCenter.y);
+                expect(chart.select('svg g').attr('transform')).toMatchTranslate(
+                    newCenter.x,
+                    newCenter.y
+                );
             });
         });
         describe('with radius padding', () => {
             beforeEach(() => {
-                chart.externalRadiusPadding(17)
-                    .render();
+                chart.externalRadiusPadding(17).render();
                 return chart;
             });
             it('should not change center', () => {
-                expect(chart.select('svg g').attr('transform')).toMatchTranslate(defaultCenter.x, defaultCenter.y);
+                expect(chart.select('svg g').attr('transform')).toMatchTranslate(
+                    defaultCenter.x,
+                    defaultCenter.y
+                );
             });
             it('should decrease outer radius', () => {
                 expect(chart.select('svg g.pie-slice path').attr('d')).toMatch(/83[, ]83/); // i.e. 100-17
@@ -225,7 +240,9 @@ describe('dc.pieChart', () => {
                 chart.render();
             });
             it('label should be hidden if filtered out', () => {
-                expect(chart.selectAll('svg g text.pie-slice').nodes()[0].textContent).toEqual('22');
+                expect(chart.selectAll('svg g text.pie-slice').nodes()[0].textContent).toEqual(
+                    '22'
+                );
                 expect(chart.selectAll('svg g text.pie-slice').nodes()[1].textContent).toEqual('');
             });
             afterEach(() => {
@@ -250,7 +267,9 @@ describe('dc.pieChart', () => {
         });
         describe('slice selection', () => {
             it('on click function should be defined', () => {
-                expect(chart.selectAll('svg g g.pie-slice path').on('click') !== undefined).toBeTruthy();
+                expect(
+                    chart.selectAll('svg g g.pie-slice path').on('click') !== undefined
+                ).toBeTruthy();
             });
             it('by default no slice should be selected', () => {
                 expect(chart.hasFilter()).toBeFalsy();
@@ -289,7 +308,9 @@ describe('dc.pieChart', () => {
                     if (d.data.key === '66' || d.data.key === '22') {
                         expect(d3.select(this).attr('class').indexOf('selected') > 0).toBeTruthy();
                     } else {
-                        expect(d3.select(this).attr('class').indexOf('deselected') > 0).toBeTruthy();
+                        expect(
+                            d3.select(this).attr('class').indexOf('deselected') > 0
+                        ).toBeTruthy();
                     }
                 });
                 chart.filterAll();
@@ -338,27 +359,31 @@ describe('dc.pieChart', () => {
             // group.all starts with 22 -> 2, 33 -> 2, 44 -> 3, 55 -> 2, 66 -> 1
             describe('with usual top->bottom sorting and cap', () => {
                 beforeEach(() => {
-                    chart.cap(4).ordering(kv => -kv.value).redraw();
+                    chart
+                        .cap(4)
+                        .ordering(kv => -kv.value)
+                        .redraw();
                 });
                 it('should show top 4 groups and others', () => {
                     // crossfilter's quicksort is stable for < 32 elements, so the value:2's are still in alphabetical order
-                    expect(['44', '22', '33', '55', 'Others']).toEqual(chart.data().map(dc.pluck('key')));
+                    expect(['44', '22', '33', '55', 'Others']).toEqual(
+                        chart.data().map(dc.pluck('key'))
+                    );
                 });
             });
             describe('with key ordering', () => {
                 beforeEach(() => {
-                    chart
-                        .ordering(dc.pluck('key'))
-                        .redraw();
+                    chart.ordering(dc.pluck('key')).redraw();
                 });
                 it('should show lowest 4 groups by key and others', () => {
-                    expect(['22', '33', '44', '55', 'Others']).toEqual(chart.data().map(dc.pluck('key')));
+                    expect(['22', '33', '44', '55', 'Others']).toEqual(
+                        chart.data().map(dc.pluck('key'))
+                    );
                 });
             });
         });
         describe('comparing crossfilter and chart ordering', () => {
-            let crossfilterOrder,
-                crossfilterTop2;
+            let crossfilterOrder, crossfilterTop2;
             beforeEach(() => {
                 countryChart = buildCountryChart('country-chart');
                 countryChart.innerRadius(innerRadius);
@@ -391,21 +416,20 @@ describe('dc.pieChart', () => {
                         expect(countryChart.data().map(dc.pluck('key'))).toEqual(['CA', 'Others']);
                     });
                 });
-
             });
             describe('with default ordering and cap(1)', () => {
                 beforeEach(() => {
                     countryChart.cap(1).redraw();
                 });
-                it('should show the largest value\'s key, and others', () => {
+                it("should show the largest value's key, and others", () => {
                     expect(['US', 'Others']).toEqual(countryChart.data().map(dc.pluck('key')));
                 });
                 describe('and takeFront(false)', () => {
                     beforeEach(() => {
                         countryChart.takeFront(false).redraw();
                     });
-                    it('should show the smallest value\'s key, and others', () => {
-                        expect(['CA','Others']).toEqual(countryChart.data().map(dc.pluck('key')));
+                    it("should show the smallest value's key, and others", () => {
+                        expect(['CA', 'Others']).toEqual(countryChart.data().map(dc.pluck('key')));
                     });
                 });
             });
@@ -435,8 +459,7 @@ describe('dc.pieChart', () => {
         let chart;
         beforeEach(() => {
             chart = buildChart('pie-chart3');
-            chart.minAngleForLabel(1)
-                .renderTitle(true);
+            chart.minAngleForLabel(1).renderTitle(true);
             chart.render();
         });
         it('label should not be generated if the slice is too small', () => {
@@ -448,7 +471,9 @@ describe('dc.pieChart', () => {
                 chart.filter('66').redraw();
             });
             it('a small slice should be labelled if it is selected', () => {
-                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[4]).text()).toEqual('66');
+                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[4]).text()).toEqual(
+                    '66'
+                );
             });
             afterEach(() => {
                 chart.filter(null);
@@ -460,7 +485,8 @@ describe('dc.pieChart', () => {
         let chart;
         beforeEach(() => {
             chart = buildChart('pie-chart3');
-            chart.label(d => 'custom')
+            chart
+                .label(d => 'custom')
                 .title(d => 'custom')
                 .minAngleForLabel(1)
                 .renderTitle(true);
@@ -470,7 +496,9 @@ describe('dc.pieChart', () => {
             expect(chart.selectAll('text.pie-slice').nodes().length).toEqual(5);
         });
         it('custom function should be used to dynamically generate label', () => {
-            expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual('custom');
+            expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual(
+                'custom'
+            );
         });
         it('label should not be generated if the slice is too small', () => {
             // slice '66'
@@ -491,14 +519,14 @@ describe('dc.pieChart', () => {
         let chart;
         beforeEach(() => {
             chart = buildChart('pie-chart4');
-            chart.slicesCap(2)
-                .renderTitle(true)
-                .othersLabel('small');
+            chart.slicesCap(2).renderTitle(true).othersLabel('small');
             chart.render();
         });
         describe('with normal valueAccessor and descending value ordering', () => {
             beforeEach(() => {
-                chart.dimension(valueDimension).group(valueGroup)
+                chart
+                    .dimension(valueDimension)
+                    .group(valueGroup)
                     .valueAccessor(dc.pluck('value'))
                     .ordering(kv => -kv.value)
                     .render();
@@ -507,11 +535,14 @@ describe('dc.pieChart', () => {
                 expect(chart.selectAll('text.pie-slice').nodes().length).toEqual(3);
             });
             it('others slice should use custom name', () => {
-                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[2]).text()).toEqual('small');
+                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[2]).text()).toEqual(
+                    'small'
+                );
             });
             it('remaining slices should be in descending value order', () => {
-                expect(chart.selectAll('text.pie-slice').data().map(dc.pluck('value')))
-                    .toEqual([3,2,5]);
+                expect(chart.selectAll('text.pie-slice').data().map(dc.pluck('value'))).toEqual([
+                    3, 2, 5,
+                ]);
             });
             describe('clicking others slice', () => {
                 let event;
@@ -521,7 +552,7 @@ describe('dc.pieChart', () => {
                     chart.selectAll('.pie-slice path').nodes()[2].dispatchEvent(event);
                 });
                 it('should filter three smallest', () => {
-                    expect(chart.filters()).toEqual(['33', '55', '66','small']);
+                    expect(chart.filters()).toEqual(['33', '55', '66', 'small']);
                 });
                 describe('clicking again', () => {
                     beforeEach(() => {
@@ -537,23 +568,30 @@ describe('dc.pieChart', () => {
             // statusMultiGroup has
             // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
             beforeEach(() => {
-                chart.dimension(statusDimension).group(statusMultiGroup)
+                chart
+                    .dimension(statusDimension)
+                    .group(statusMultiGroup)
                     .valueAccessor(d => d.value.total)
                     .ordering(d => -d.value.total)
                     .render();
                 return chart;
             });
             it('correct values, no others slice', () => {
-                expect(chart.selectAll('g.pie-slice').data().map(dc.pluck('value')))
-                    .toEqual([220, 198]);
+                expect(chart.selectAll('g.pie-slice').data().map(dc.pluck('value'))).toEqual([
+                    220, 198,
+                ]);
             });
             describe('with cap(1)', () => {
                 beforeEach(() => {
                     chart.cap(1).render();
                 });
                 it('correct values, others slice', () => {
-                    expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                        .toEqual(['F: 220', 'small: 198']);
+                    expect(
+                        chart
+                            .selectAll('title')
+                            .nodes()
+                            .map(t => d3.select(t).text())
+                    ).toEqual(['F: 220', 'small: 198']);
                 });
             });
         });
@@ -561,23 +599,30 @@ describe('dc.pieChart', () => {
             // statusMultiGroup has
             // [{"key":"F","value":{"count":5,"total":220}},{"key":"T","value":{"count":5,"total":198}}]
             beforeEach(() => {
-                chart.dimension(statusDimension).group(statusMultiGroup)
+                chart
+                    .dimension(statusDimension)
+                    .group(statusMultiGroup)
                     .valueAccessor(d => d.value.getTotal())
                     .ordering(d => -d.value.getTotal())
                     .render();
                 return chart;
             });
             it('correct values, no others slice', () => {
-                expect(chart.selectAll('g.pie-slice').data().map(dc.pluck('value')))
-                    .toEqual([220, 198]);
+                expect(chart.selectAll('g.pie-slice').data().map(dc.pluck('value'))).toEqual([
+                    220, 198,
+                ]);
             });
             describe('with cap(1)', () => {
                 beforeEach(() => {
                     chart.cap(1).render();
                 });
                 it('correct values, others slice', () => {
-                    expect(chart.selectAll('title').nodes().map(t => d3.select(t).text()))
-                        .toEqual(['F: 220', 'small: 198']);
+                    expect(
+                        chart
+                            .selectAll('title')
+                            .nodes()
+                            .map(t => d3.select(t).text())
+                    ).toEqual(['F: 220', 'small: 198']);
                 });
             });
         });
@@ -621,10 +666,12 @@ describe('dc.pieChart', () => {
         let chart;
         beforeEach(() => {
             chart = buildChart('pie-chart-default-label-title');
-            chart.dimension(statusGroup)
+            chart
+                .dimension(statusGroup)
                 .group(statusMultiGroup)
                 .valueAccessor(d => d.value.count)
-                .renderLabel(true).renderTitle(true);
+                .renderLabel(true)
+                .renderTitle(true);
             chart.render();
             return chart;
         });
@@ -632,7 +679,9 @@ describe('dc.pieChart', () => {
             expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual('F');
         });
         it('default function should be used to dynamically generate title', () => {
-            expect(d3.select(chart.selectAll('g.pie-slice title').nodes()[0]).text()).toEqual('F: 5');
+            expect(d3.select(chart.selectAll('g.pie-slice title').nodes()[0]).text()).toEqual(
+                'F: 5'
+            );
         });
         describe('with n/a filter', () => {
             beforeEach(() => {
@@ -647,14 +696,18 @@ describe('dc.pieChart', () => {
                 expect(chart.selectAll('svg g text.pie-slice').nodes().length).toBe(1);
             });
             it('should have slice labeled empty', () => {
-                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual('empty');
+                expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual(
+                    'empty'
+                );
             });
             describe('with emptyTitle', () => {
                 beforeEach(() => {
                     chart.emptyTitle('nothing').render();
                 });
                 it('should respect the emptyTitle', () => {
-                    expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual('nothing');
+                    expect(d3.select(chart.selectAll('text.pie-slice').nodes()[0]).text()).toEqual(
+                        'nothing'
+                    );
                 });
                 afterEach(() => {
                     chart.emptyTitle('empty');
@@ -677,7 +730,8 @@ describe('dc.pieChart', () => {
         it('should place labels outside of pie offset by given radius', () => {
             const label = d3.select('#pie-chart-external-labeling svg g text.pie-slice');
 
-            const centroid = d3.arc()
+            const centroid = d3
+                .arc()
                 .outerRadius(chart.radius() + 10)
                 .innerRadius(chart.radius() + 10)
                 .centroid(label.datum());
@@ -698,7 +752,8 @@ describe('dc.pieChart', () => {
             d3.selectAll('#pie-chart-external-labeling svg g text.pie-slice').each(function () {
                 const label = d3.select(this);
 
-                const centroid = d3.arc()
+                const centroid = d3
+                    .arc()
                     .outerRadius(chart.radius())
                     .innerRadius(chart.innerRadius())
                     .centroid(label.datum());
@@ -749,16 +804,18 @@ describe('dc.pieChart', () => {
     describe('legends', () => {
         let chart;
         beforeEach(() => {
-            chart = buildChart('pie-chart-legend')
-                .cap(3)
-                .legend(new dc.Legend())
-                .render();
+            chart = buildChart('pie-chart-legend').cap(3).legend(new dc.Legend()).render();
         });
         it('should generate items for each slice', () => {
-            expect(chart.selectAll('g.dc-legend g.dc-legend-item').size()).toEqual(chart.data().length);
+            expect(chart.selectAll('g.dc-legend g.dc-legend-item').size()).toEqual(
+                chart.data().length
+            );
         });
         it('should include "others" item', () => {
-            const numOthersGroups = chart.selectAll('g.dc-legend g.dc-legend-item text').filter((d, i) => d.name === 'Others').size();
+            const numOthersGroups = chart
+                .selectAll('g.dc-legend g.dc-legend-item text')
+                .filter((d, i) => d.name === 'Others')
+                .size();
 
             expect(numOthersGroups).toEqual(1);
         });
@@ -791,7 +848,6 @@ describe('dc.pieChart', () => {
                 legendItem.on('click')({}, legendItem.datum());
 
                 expect(chart.hasFilter(d.name)).toBeTruthy();
-
             });
         });
         afterEach(() => {
@@ -799,4 +855,3 @@ describe('dc.pieChart', () => {
         });
     });
 });
-

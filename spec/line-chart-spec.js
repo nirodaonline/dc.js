@@ -12,8 +12,11 @@ describe('dc.lineChart', () => {
         appendChartID(id);
 
         chart = new dc.LineChart(`#${id}`);
-        chart.dimension(dimension).group(group)
-            .width(1100).height(200)
+        chart
+            .dimension(dimension)
+            .group(group)
+            .width(1100)
+            .height(200)
             .x(d3.scaleUtc().domain([makeDate(2012, 1, 1), makeDate(2012, 11, 31)]))
             .transitionDuration(0);
     });
@@ -29,16 +32,15 @@ describe('dc.lineChart', () => {
             });
 
             it('should be dash-dot-dot-dot to match the specified style', () => {
-                expect(chart.selectAll('path.line').attr('stroke-dasharray')).toEqualIntOrPixelList('3,1,1,1');
+                expect(chart.selectAll('path.line').attr('stroke-dasharray')).toEqualIntOrPixelList(
+                    '3,1,1,1'
+                );
             });
         });
 
         describe('render data markers', () => {
             beforeEach(() => {
-                chart.dotRadius(5)
-                    .brushOn(false)
-                    .renderDataPoints({}).render();
-
+                chart.dotRadius(5).brushOn(false).renderDataPoints({}).render();
             });
 
             it('should use default options', () => {
@@ -51,8 +53,7 @@ describe('dc.lineChart', () => {
             });
 
             it('should use supplied options', () => {
-                chart.renderDataPoints({radius: 3, fillOpacity: 1, strokeOpacity: 1})
-                    .render();
+                chart.renderDataPoints({ radius: 3, fillOpacity: 1, strokeOpacity: 1 }).render();
                 chart.selectAll('circle.dot').each(function () {
                     const dot = d3.select(this);
                     expect(dot.style('fill-opacity')).toBe('1');
@@ -121,13 +122,11 @@ describe('dc.lineChart', () => {
                 expect(chart.select('.dc-tooltip._0 .dot').empty()).toBeTruthy();
                 expect(chart.select('.dc-tooltip._0 .dot title').empty()).toBeTruthy();
             });
-
         });
 
         describe('title rendering with brushOn', () => {
             beforeEach(() => {
-                chart.brushOn(true)
-                    .xyTipsOn(true); // default, for exposition
+                chart.brushOn(true).xyTipsOn(true); // default, for exposition
                 chart.render();
             });
 
@@ -138,8 +137,7 @@ describe('dc.lineChart', () => {
 
             describe('with xyTipsOn always', () => {
                 beforeEach(() => {
-                    chart.brushOn(true)
-                        .xyTipsOn('always');
+                    chart.brushOn(true).xyTipsOn('always');
                     chart.render();
                 });
 
@@ -168,7 +166,10 @@ describe('dc.lineChart', () => {
             });
 
             it('should generate a label for each datum', lineLabelCount);
-            it('should generate labels with positions corresponding to their data', lineLabelPositions);
+            it(
+                'should generate labels with positions corresponding to their data',
+                lineLabelPositions
+            );
         });
 
         describe('data point highlights and refs off', () => {
@@ -243,8 +244,12 @@ describe('dc.lineChart', () => {
                 });
 
                 it('should have a stroke dash', () => {
-                    expect(chart.selectAll('path.xRef').attr('stroke-dasharray')).toEqualIntOrPixelList('5,5');
-                    expect(chart.selectAll('path.yRef').attr('stroke-dasharray')).toEqualIntOrPixelList('5,5');
+                    expect(
+                        chart.selectAll('path.xRef').attr('stroke-dasharray')
+                    ).toEqualIntOrPixelList('5,5');
+                    expect(
+                        chart.selectAll('path.yRef').attr('stroke-dasharray')
+                    ).toEqualIntOrPixelList('5,5');
                 });
 
                 describe('when dot is hovered over', () => {
@@ -320,12 +325,16 @@ describe('dc.lineChart', () => {
             });
 
             it('should draw the chart line', () => {
-                expect(chart.select('path.line').attr('d')).toMatchPath('M348,107 L390,107 L397,0 L461,107 L488,53 L583,53');
+                expect(chart.select('path.line').attr('d')).toMatchPath(
+                    'M348,107 L390,107 L397,0 L461,107 L488,53 L583,53'
+                );
             });
 
             it('should draw the chart area', () => {
-                expect(chart.select('path.area').attr('d')).toMatchPath('M348,107 L390,107 L397,0 L461,107 L488,53 L583,' +
-                    '53 L583,160 L488,160 L461,160 L397,160 L390,160 L348,160Z');
+                expect(chart.select('path.area').attr('d')).toMatchPath(
+                    'M348,107 L390,107 L397,0 L461,107 L488,53 L583,' +
+                        '53 L583,160 L488,160 L461,160 L397,160 L390,160 L348,160Z'
+                );
             });
         });
 
@@ -334,10 +343,22 @@ describe('dc.lineChart', () => {
                 const stateDimension = data.dimension(d => d.state);
                 const stateGroup = stateDimension.group();
 
-                chart.dimension(stateDimension)
+                chart
+                    .dimension(stateDimension)
                     .group(stateGroup)
                     .xUnits(dc.units.ordinal)
-                    .x(d3.scaleBand().domain(['California', 'Colorado', 'Delaware', 'Mississippi', 'Oklahoma', 'Ontario']))
+                    .x(
+                        d3
+                            .scaleBand()
+                            .domain([
+                                'California',
+                                'Colorado',
+                                'Delaware',
+                                'Mississippi',
+                                'Oklahoma',
+                                'Ontario',
+                            ])
+                    )
                     .render();
             });
 
@@ -346,7 +367,9 @@ describe('dc.lineChart', () => {
             });
 
             it('should generate an ordinal path', () => {
-                expect(chart.select('path.line').attr('d')).toMatchPath('M85,0L255,107L425,107L595,53L765,107L935,53');
+                expect(chart.select('path.line').attr('d')).toMatchPath(
+                    'M85,0L255,107L425,107L595,53L765,107L935,53'
+                );
             });
         });
 
@@ -356,7 +379,8 @@ describe('dc.lineChart', () => {
                     const idGroup = dimension.group().reduceSum(d => d.id);
                     const valueGroup = dimension.group().reduceSum(d => d.value);
 
-                    chart.dimension(dimension)
+                    chart
+                        .dimension(dimension)
                         .brushOn(false)
                         .x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]))
                         .group(idGroup, 'stack 0')
@@ -373,32 +397,42 @@ describe('dc.lineChart', () => {
                 });
 
                 it('should set the path for stack 0 line', () => {
-                    expect(chart.select('g._0 path.line').attr('d')).toMatchPath('M58 159L222 157L246 150L492 158L597 151L961 153');
+                    expect(chart.select('g._0 path.line').attr('d')).toMatchPath(
+                        'M58 159L222 157L246 150L492 158L597 151L961 153'
+                    );
                 });
 
                 it('should set the path for stack 1 line', () => {
-                    expect(chart.select('g._1 path.line').attr('d')).toMatchPath('M58 134L222 119L246 75L492 133L597 120L961 109');
+                    expect(chart.select('g._1 path.line').attr('d')).toMatchPath(
+                        'M58 134L222 119L246 75L492 133L597 120L961 109'
+                    );
                 });
 
                 it('should set the path for stack 2 line', () => {
-                    expect(chart.select('g._2 path.line').attr('d')).toMatchPath('M58 109L222 81L246 0L492 108L597 89L961 65');
+                    expect(chart.select('g._2 path.line').attr('d')).toMatchPath(
+                        'M58 109L222 81L246 0L492 108L597 89L961 65'
+                    );
                 });
 
                 it('should have its own title accessor', () => {
-                    expect(chart.title()({value: 1})).toBe('stack 0: 1');
-                    expect(chart.title('stack 0')({value: 2})).toBe('stack 0: 2');
-                    expect(chart.title('stack 1')({value: 3})).toBe('stack 1: 3');
+                    expect(chart.title()({ value: 1 })).toBe('stack 0: 1');
+                    expect(chart.title('stack 0')({ value: 2 })).toBe('stack 0: 2');
+                    expect(chart.title('stack 1')({ value: 3 })).toBe('stack 1: 3');
                 });
 
                 it('should have titles rendered for extra stacks', () => {
                     chart.selectAll('g._1 circle.dot').each(function (d) {
-                        expect(d3.select(this).select('title').text()).toBe(`stack 1: ${d.data.value}`);
+                        expect(d3.select(this).select('title').text()).toBe(
+                            `stack 1: ${d.data.value}`
+                        );
                     });
                 });
 
                 it('should default to first stack title for untitled stacks', () => {
                     chart.selectAll('g._2 circle.dot').each(function (d) {
-                        expect(d3.select(this).select('title').text()).toBe(`stack 0: ${d.data.value}`);
+                        expect(d3.select(this).select('title').text()).toBe(
+                            `stack 0: ${d.data.value}`
+                        );
                     });
                 });
 
@@ -412,26 +446,38 @@ describe('dc.lineChart', () => {
                     });
 
                     it('should set the area for stack 0', () => {
-                        expect(chart.select('g._0 path.area').attr('d')).toMatchPath('M58 159L222 157L246 150L492 158L597 ' +
-                            '151L961 153L961 160L597 160L492 160L246 160L222 160L58 160Z');
+                        expect(chart.select('g._0 path.area').attr('d')).toMatchPath(
+                            'M58 159L222 157L246 150L492 158L597 ' +
+                                '151L961 153L961 160L597 160L492 160L246 160L222 160L58 160Z'
+                        );
                     });
 
                     it('should set the area for stack 1', () => {
-                        expect(chart.select('g._1 path.area').attr('d')).toMatchPath('M58 134L222 119L246 75L492 133L597 ' +
-                            '120L961 109L961 153L597 151L492 158L246 150L222 157L58 159Z');
+                        expect(chart.select('g._1 path.area').attr('d')).toMatchPath(
+                            'M58 134L222 119L246 75L492 133L597 ' +
+                                '120L961 109L961 153L597 151L492 158L246 150L222 157L58 159Z'
+                        );
                     });
 
                     it('should set the area for stack 2', () => {
-                        expect(chart.select('g._2 path.area').attr('d')).toMatchPath('M58 109L222 81L246 0L492 108L597 89L961 ' +
-                            '65L961 109L597 120L492 133L246 75L222 119L58 134Z');
+                        expect(chart.select('g._2 path.area').attr('d')).toMatchPath(
+                            'M58 109L222 81L246 0L492 108L597 89L961 ' +
+                                '65L961 109L597 120L492 133L246 75L222 119L58 134Z'
+                        );
                     });
 
                     it('should draw tooltip dots on top of paths and areas', () => {
                         const list = chart.selectAll('circle.dot, path.line, path.area');
 
-                        const indexOfLastLine = list.nodes().indexOf(list.filter('path.line').nodes()[2]);
-                        const indexOfLastArea = list.nodes().indexOf(list.filter('path.area').nodes()[2]);
-                        const indexOfDot = list.nodes().indexOf(list.filter('circle.dot').nodes()[0]);
+                        const indexOfLastLine = list
+                            .nodes()
+                            .indexOf(list.filter('path.line').nodes()[2]);
+                        const indexOfLastArea = list
+                            .nodes()
+                            .indexOf(list.filter('path.area').nodes()[2]);
+                        const indexOfDot = list
+                            .nodes()
+                            .indexOf(list.filter('circle.dot').nodes()[0]);
 
                         expect(indexOfDot).toBeGreaterThan(indexOfLastArea);
                         expect(indexOfDot).toBeGreaterThan(indexOfLastLine);
@@ -440,11 +486,19 @@ describe('dc.lineChart', () => {
                     it('should draw tooltip ref lines on top of paths', () => {
                         const list = chart.selectAll('path.yRef, path.xRef, path.line, path.area');
 
-                        const indexOfLastLine = list.nodes().indexOf(list.filter('path.line').nodes()[2]);
-                        const indexOfLastArea = list.nodes().indexOf(list.filter('path.area').nodes()[2]);
+                        const indexOfLastLine = list
+                            .nodes()
+                            .indexOf(list.filter('path.line').nodes()[2]);
+                        const indexOfLastArea = list
+                            .nodes()
+                            .indexOf(list.filter('path.area').nodes()[2]);
 
-                        const indexOfFirstYRef = list.nodes().indexOf(list.filter('path.yRef').nodes()[0]);
-                        const indexOfFirstXRef = list.nodes().indexOf(list.filter('path.xRef').nodes()[0]);
+                        const indexOfFirstYRef = list
+                            .nodes()
+                            .indexOf(list.filter('path.yRef').nodes()[0]);
+                        const indexOfFirstXRef = list
+                            .nodes()
+                            .indexOf(list.filter('path.xRef').nodes()[0]);
 
                         expect(indexOfLastLine).toBeLessThan(indexOfFirstXRef);
                         expect(indexOfLastLine).toBeLessThan(indexOfFirstYRef);
@@ -452,7 +506,6 @@ describe('dc.lineChart', () => {
                         expect(indexOfLastArea).toBeLessThan(indexOfFirstXRef);
                         expect(indexOfLastArea).toBeLessThan(indexOfFirstYRef);
                     });
-
                 });
 
                 describe('stack hiding', () => {
@@ -462,12 +515,16 @@ describe('dc.lineChart', () => {
                         });
 
                         it('should hide the stack', () => {
-                            expect(chart.select('g._0 path.line').attr('d')).toMatchPath('M58 133L222 120L246 80L492 133L597 127L961 113');
+                            expect(chart.select('g._0 path.line').attr('d')).toMatchPath(
+                                'M58 133L222 120L246 80L492 133L597 127L961 113'
+                            );
                         });
 
                         it('should show the stack', () => {
                             chart.showStack('stack 0').render();
-                            expect(chart.select('g._0 path.line').attr('d')).toMatchPath('M58 159L222 157L246 150L492 158L597 151L961 153');
+                            expect(chart.select('g._0 path.line').attr('d')).toMatchPath(
+                                'M58 159L222 157L246 150L492 158L597 151L961 153'
+                            );
                         });
                     });
 
@@ -478,12 +535,16 @@ describe('dc.lineChart', () => {
                         });
 
                         it('should hide the stack', () => {
-                            expect(chart.select('g._1 path.line').attr('d')).toMatchPath('M58 112L222 83L246 0L492 108L597 85L961 64');
+                            expect(chart.select('g._1 path.line').attr('d')).toMatchPath(
+                                'M58 112L222 83L246 0L492 108L597 85L961 64'
+                            );
                         });
 
                         it('should show the stack', () => {
                             chart.showStack('stack 1').render();
-                            expect(chart.select('g._1 path.line').attr('d')).toMatchPath('M58 134L222 119L246 75L492 133L597 120L961 109');
+                            expect(chart.select('g._1 path.line').attr('d')).toMatchPath(
+                                'M58 134L222 119L246 75L492 133L597 120L961 109'
+                            );
                         });
 
                         it('should color chart dots the same as line paths', () => {
@@ -494,14 +555,17 @@ describe('dc.lineChart', () => {
 
                         it('should still show the title for a visible stack', () => {
                             chart.selectAll('g._1 circle.dot').each(function (d) {
-                                expect(d3.select(this).select('title').text()).toBe(`stack 2: ${d.data.value}`);
+                                expect(d3.select(this).select('title').text()).toBe(
+                                    `stack 2: ${d.data.value}`
+                                );
                             });
                         });
                     });
 
                     describe('hiding all the stacks', () => {
                         beforeEach(() => {
-                            chart.hideStack('stack 0')
+                            chart
+                                .hideStack('stack 0')
                                 .hideStack('stack 1')
                                 .hideStack('stack 2')
                                 .render();
@@ -520,7 +584,10 @@ describe('dc.lineChart', () => {
                     });
 
                     it('should generate a label for each datum', lineLabelCount);
-                    it('should generate labels with positions corresponding to their data', lineLabelPositions);
+                    it(
+                        'should generate labels with positions corresponding to their data',
+                        lineLabelPositions
+                    );
                 });
             });
 
@@ -531,11 +598,13 @@ describe('dc.lineChart', () => {
                     chart.group(mixedGroup).stack(mixedGroup).stack(mixedGroup);
                     chart.x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
 
-                    chart.margins({top: 30, right: 50, bottom: 30, left: 30})
+                    chart
+                        .margins({ top: 30, right: 50, bottom: 30, left: 30 })
                         .renderArea(true)
                         .yAxisPadding(5)
                         .elasticY(true)
-                        .yAxis().ticks(5);
+                        .yAxis()
+                        .ticks(5);
 
                     chart.render();
                 });
@@ -546,15 +615,23 @@ describe('dc.lineChart', () => {
                 });
 
                 it('should generate negative lines and area for stack 0', () => {
-                    expect(chart.select('g._0 path.line').attr('d')).toMatchPath('M58 81L222 81L246 92L492 79L597 52L961 67');
-                    expect(chart.select('g._0 path.area').attr('d')).toMatchPath('M58 81L222 81L246 92L492 79L597 52L961 ' +
-                        '67L961 73L597 73L492 73L246 73L222 73L58 73Z');
+                    expect(chart.select('g._0 path.line').attr('d')).toMatchPath(
+                        'M58 81L222 81L246 92L492 79L597 52L961 67'
+                    );
+                    expect(chart.select('g._0 path.area').attr('d')).toMatchPath(
+                        'M58 81L222 81L246 92L492 79L597 52L961 ' +
+                            '67L961 73L597 73L492 73L246 73L222 73L58 73Z'
+                    );
                 });
 
                 it('should generate negative lines and area for stack 1', () => {
-                    expect(chart.select('g._1 path.line').attr('d')).toMatchPath('M58 88L222 88L246 111L492 84L597 31L961 61');
-                    expect(chart.select('g._1 path.area').attr('d')).toMatchPath('M58 88L222 88L246 111L492 84L597 31L961 ' +
-                        '61L961 67L597 52L492 79L246 92L222 81L58 81Z');
+                    expect(chart.select('g._1 path.line').attr('d')).toMatchPath(
+                        'M58 88L222 88L246 111L492 84L597 31L961 61'
+                    );
+                    expect(chart.select('g._1 path.area').attr('d')).toMatchPath(
+                        'M58 88L222 88L246 111L492 84L597 31L961 ' +
+                            '61L961 67L597 52L492 79L246 92L222 81L58 81Z'
+                    );
                 });
 
                 it('should generate y axis domain dynamically', () => {
@@ -574,7 +651,10 @@ describe('dc.lineChart', () => {
                     });
 
                     it('should generate a label for each datum', lineLabelCount);
-                    it('should generate labels with positions corresponding to their data', lineLabelPositions);
+                    it(
+                        'should generate labels with positions corresponding to their data',
+                        lineLabelPositions
+                    );
                 });
             });
 
@@ -585,10 +665,12 @@ describe('dc.lineChart', () => {
                     chart.group(negativeGroup).stack(negativeGroup).stack(negativeGroup);
                     chart.x(d3.scaleUtc().domain([makeDate(2012, 4, 20), makeDate(2012, 7, 15)]));
 
-                    chart.margins({top: 30, right: 50, bottom: 30, left: 30})
+                    chart
+                        .margins({ top: 30, right: 50, bottom: 30, left: 30 })
                         .elasticY(true)
                         .xUnits(d3.utcDays)
-                        .yAxis().ticks(3);
+                        .yAxis()
+                        .ticks(3);
 
                     chart.render();
                 });
@@ -610,7 +692,8 @@ describe('dc.lineChart', () => {
             let firstItem;
 
             beforeEach(() => {
-                chart.stack(group)
+                chart
+                    .stack(group)
                     .legend(new dc.Legend().x(400).y(10).itemHeight(13).gap(5))
                     .renderArea(true)
                     .render();
@@ -645,11 +728,11 @@ describe('dc.lineChart', () => {
                 });
             });
 
-            function nthLine (n) {
+            function nthLine(n) {
                 return d3.select(chart.selectAll('path.line').nodes()[n]);
             }
 
-            function nthArea (n) {
+            function nthArea(n) {
                 return d3.select(chart.selectAll('path.area').nodes()[n]);
             }
         });
@@ -673,7 +756,10 @@ describe('dc.lineChart', () => {
 
             describe('when a brush is defined', () => {
                 it('should position the brush with an offset', () => {
-                    expect(chart.select('g.brush').attr('transform')).toMatchTranslate(chart.margins().left, 10);
+                    expect(chart.select('g.brush').attr('transform')).toMatchTranslate(
+                        chart.margins().left,
+                        10
+                    );
                 });
 
                 it('should create a fancy brush resize handle', () => {
@@ -681,11 +767,13 @@ describe('dc.lineChart', () => {
                     expect(selectAll.size()).toBe(2);
                     selectAll.each(function (d, i) {
                         if (i === 0) {
-                            expect(d3.select(this).attr('d'))
-                                .toMatchPath('M-0.5,53 A6,6 0 0 0 -6.5,59 V100 A6,6 0 0 0 -0.5,106 ZM-2.5,61 V98 M-4.5,61 V98');
+                            expect(d3.select(this).attr('d')).toMatchPath(
+                                'M-0.5,53 A6,6 0 0 0 -6.5,59 V100 A6,6 0 0 0 -0.5,106 ZM-2.5,61 V98 M-4.5,61 V98'
+                            );
                         } else {
-                            expect(d3.select(this).attr('d'))
-                                .toMatchPath('M0.5,53 A6,6 0 0 1 6.5,59 V100 A6,6 0 0 1 0.5,106 ZM2.5,61 V98 M4.5,61 V98');
+                            expect(d3.select(this).attr('d')).toMatchPath(
+                                'M0.5,53 A6,6 0 0 1 6.5,59 V100 A6,6 0 0 1 0.5,106 ZM2.5,61 V98 M4.5,61 V98'
+                            );
                         }
                     });
                 });
@@ -703,7 +791,10 @@ describe('dc.lineChart', () => {
                 });
 
                 it('should set extent width based on filter set', () => {
-                    expect(chart.select('g.brush rect.selection').attr('width')).toBeWithinDelta(88, 1);
+                    expect(chart.select('g.brush rect.selection').attr('width')).toBeWithinDelta(
+                        88,
+                        1
+                    );
                 });
 
                 it('should not have an area path', () => {
@@ -718,7 +809,8 @@ describe('dc.lineChart', () => {
         describe('changing data', () => {
             let stateDimension;
             beforeEach(() => {
-                chart.brushOn(false)
+                chart
+                    .brushOn(false)
                     .title(d => d.value)
                     .render();
                 stateDimension = data.dimension(d => d.state);
@@ -740,7 +832,8 @@ describe('dc.lineChart', () => {
     });
     describe('change color', () => {
         beforeEach(() => {
-            chart.brushOn(false)
+            chart
+                .brushOn(false)
                 .ordinalColors(['#ff0000'])
                 .colorAccessor(() => 0)
                 .render();
@@ -750,18 +843,29 @@ describe('dc.lineChart', () => {
         });
     });
 
-    function lineLabelCount () {
-        expect(chart.selectAll('text.lineLabel').size()).toBe(chart.stack().length * chart.group().all().length);
+    function lineLabelCount() {
+        expect(chart.selectAll('text.lineLabel').size()).toBe(
+            chart.stack().length * chart.group().all().length
+        );
     }
 
-    function lineLabelPositions () {
+    function lineLabelPositions() {
         const LABEL_PADDING = 3;
-        chart.selectAll('.stack').nodes().forEach((stack, i) => {
-            d3.select(stack).selectAll('text.lineLabel').nodes().forEach((lineLabel, j) => {
-                expect(+d3.select(lineLabel).attr('x')).toBeCloseTo(chart.x()(chart.data()[i].values[j].x));
-                expect(+d3.select(lineLabel).attr('y') + LABEL_PADDING).toBeCloseTo(chart.y()(chart.data()[i].values[j].y +
-                        chart.data()[i].values[j].y0));
+        chart
+            .selectAll('.stack')
+            .nodes()
+            .forEach((stack, i) => {
+                d3.select(stack)
+                    .selectAll('text.lineLabel')
+                    .nodes()
+                    .forEach((lineLabel, j) => {
+                        expect(+d3.select(lineLabel).attr('x')).toBeCloseTo(
+                            chart.x()(chart.data()[i].values[j].x)
+                        );
+                        expect(+d3.select(lineLabel).attr('y') + LABEL_PADDING).toBeCloseTo(
+                            chart.y()(chart.data()[i].values[j].y + chart.data()[i].values[j].y0)
+                        );
+                    });
             });
-        });
     }
 });

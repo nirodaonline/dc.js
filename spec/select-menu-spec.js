@@ -16,9 +16,7 @@ describe('dc.selectMenu', () => {
         appendChartID(id);
 
         chart = new dc.SelectMenu(`#${id}`);
-        chart.dimension(stateDimension)
-            .group(stateGroup)
-            .transitionDuration(0);
+        chart.dimension(stateDimension).group(stateGroup).transitionDuration(0);
         chart.render();
     });
 
@@ -68,7 +66,9 @@ describe('dc.selectMenu', () => {
             expect(option.text).toEqual('Select all');
         });
         it('creates correct number of options', () => {
-            expect(chart.selectAll('option.dc-select-option').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('option.dc-select-option').nodes().length).toEqual(
+                stateGroup.all().length
+            );
         });
     });
 
@@ -101,7 +101,7 @@ describe('dc.selectMenu', () => {
 
     describe('regular single select', () => {
         describe('selecting an option', () => {
-            it('filters dimension based on selected option\'s value', () => {
+            it("filters dimension based on selected option's value", () => {
                 chart.onChange(stateGroup.all()[0].key);
                 expect(chart.filter()).toEqual('California');
             });
@@ -156,17 +156,33 @@ describe('dc.selectMenu', () => {
         });
         it('selects all options corresponding to active filters on redraw', () => {
             // IE returns an extra option with value '', not sure what it means
-            const selectedOptions = chart.selectAll('select').selectAll('option').nodes().filter(d => d.value && d.selected);
+            const selectedOptions = chart
+                .selectAll('select')
+                .selectAll('option')
+                .nodes()
+                .filter(d => d.value && d.selected);
             expect(selectedOptions.length).toEqual(2);
             expect(selectedOptions.map(d => d.value)).toEqual(['California', 'Colorado']);
         });
         it('does not deselect previously filtered options when new option is added', () => {
-            chart.onChange([stateGroup.all()[0].key, stateGroup.all()[1].key, stateGroup.all()[5].key]);
+            chart.onChange([
+                stateGroup.all()[0].key,
+                stateGroup.all()[1].key,
+                stateGroup.all()[5].key,
+            ]);
 
             // IE returns an extra option with value '', not sure what it means
-            const selectedOptions = chart.selectAll('select').selectAll('option').nodes().filter(d => d.value && d.selected);
+            const selectedOptions = chart
+                .selectAll('select')
+                .selectAll('option')
+                .nodes()
+                .filter(d => d.value && d.selected);
             expect(selectedOptions.length).toEqual(3);
-            expect(selectedOptions.map(d => d.value)).toEqual(['California', 'Colorado', 'Ontario']);
+            expect(selectedOptions.map(d => d.value)).toEqual([
+                'California',
+                'Colorado',
+                'Ontario',
+            ]);
         });
 
         afterEach(() => {
@@ -184,7 +200,9 @@ describe('dc.selectMenu', () => {
         it('can be overridden', () => {
             regionDimension.filter('South');
             chart.filterDisplayed(d => true).redraw();
-            expect(chart.selectAll('option.dc-select-option').nodes().length).toEqual(stateGroup.all().length);
+            expect(chart.selectAll('option.dc-select-option').nodes().length).toEqual(
+                stateGroup.all().length
+            );
             expect(getOption(chart, stateGroup.all().length - 1).text).toEqual('Ontario: 0');
         });
         it('retains order with filtered options', () => {
@@ -198,7 +216,7 @@ describe('dc.selectMenu', () => {
         });
     });
 
-    function getOption (_chart, i) {
+    function getOption(_chart, i) {
         return _chart.selectAll('option.dc-select-option').nodes()[i];
     }
 });

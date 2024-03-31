@@ -8,8 +8,14 @@ describe('dc.BoxPlot', () => {
 
         dimension = data.dimension(d => d.countrycode);
         group = dimension.group().reduce(
-            (p, v) => { p.push(+v.value); return p; },
-            (p, v) => { p.splice(p.indexOf(+v.value), 1); return p; },
+            (p, v) => {
+                p.push(+v.value);
+                return p;
+            },
+            (p, v) => {
+                p.splice(p.indexOf(+v.value), 1);
+                return p;
+            },
             () => []
         );
 
@@ -22,12 +28,12 @@ describe('dc.BoxPlot', () => {
             .group(group)
             .width(300)
             .height(144)
-            .margins({top: 0, right: 0, bottom: 0, left: 0})
+            .margins({ top: 0, right: 0, bottom: 0, left: 0 })
             .boxPadding(0)
             .transitionDuration(0)
             .transitionDelay(0)
             .y(d3.scaleLinear().domain([0, 144]))
-            .ordinalColors(['#01','#02']);
+            .ordinalColors(['#01', '#02']);
     });
 
     describe('rendering the box plot', () => {
@@ -86,11 +92,7 @@ describe('dc.BoxPlot', () => {
 
         describe('with renderDataPoints enabled', () => {
             beforeEach(() => {
-                chart
-                    .renderDataPoints(true)
-                    .renderTitle(true)
-                    .boxWidth(100)
-                    .render();
+                chart.renderDataPoints(true).renderTitle(true).boxWidth(100).render();
             });
 
             it('should create one data point per data value (non-outlier)', () => {
@@ -101,8 +103,8 @@ describe('dc.BoxPlot', () => {
             });
             it('should display the data between 10 to 90 of the box (by default)', () => {
                 const w = box(1).select('rect.box').attr('width');
-                const min = (w / 2) - (w * chart.dataWidthPortion() / 2);
-                const max = (w / 2) + (w * chart.dataWidthPortion() / 2);
+                const min = w / 2 - (w * chart.dataWidthPortion()) / 2;
+                const max = w / 2 + (w * chart.dataWidthPortion()) / 2;
                 chart.selectAll('circle.data').each(function () {
                     expect(d3.select(this).attr('cx')).toBeGreaterThan(min - 0.1);
                     expect(d3.select(this).attr('cx')).toBeLessThan(max + 0.1);
@@ -111,15 +113,13 @@ describe('dc.BoxPlot', () => {
 
             describe('and dataWidthPortion set to 50%', () => {
                 beforeEach(() => {
-                    chart
-                        .dataWidthPortion(0.5)
-                        .render();
+                    chart.dataWidthPortion(0.5).render();
                 });
 
                 it('should display the data between 25 to 75 of the box', () => {
                     const w = box(1).select('rect.box').attr('width');
-                    const min = (w / 2) - (w * chart.dataWidthPortion() / 2);
-                    const max = (w / 2) + (w * chart.dataWidthPortion() / 2);
+                    const min = w / 2 - (w * chart.dataWidthPortion()) / 2;
+                    const max = w / 2 + (w * chart.dataWidthPortion()) / 2;
                     chart.selectAll('circle.data').each(function () {
                         expect(d3.select(this).attr('cx')).toBeGreaterThan(min - 0.1);
                         expect(d3.select(this).attr('cx')).toBeLessThan(max + 0.1);
@@ -129,15 +129,13 @@ describe('dc.BoxPlot', () => {
 
             describe('and dataWidthPortion set to 10%', () => {
                 beforeEach(() => {
-                    chart
-                        .dataWidthPortion(0.1)
-                        .render();
+                    chart.dataWidthPortion(0.1).render();
                 });
 
                 it('should display the data between 45 to 55 of the box', () => {
                     const w = box(1).select('rect.box').attr('width');
-                    const min = (w / 2) - (w * chart.dataWidthPortion() / 2);
-                    const max = (w / 2) + (w * chart.dataWidthPortion() / 2);
+                    const min = w / 2 - (w * chart.dataWidthPortion()) / 2;
+                    const max = w / 2 + (w * chart.dataWidthPortion()) / 2;
                     chart.selectAll('circle.data').each(function () {
                         expect(d3.select(this).attr('cx')).toBeGreaterThan(min - 0.1);
                         expect(d3.select(this).attr('cx')).toBeLessThan(max + 0.1);
@@ -170,7 +168,9 @@ describe('dc.BoxPlot', () => {
             });
 
             it('should be settable to a function', () => {
-                chart.boxWidth((innerChartWidth, xUnits) => innerChartWidth / (xUnits + 2)).render();
+                chart
+                    .boxWidth((innerChartWidth, xUnits) => innerChartWidth / (xUnits + 2))
+                    .render();
                 expect(box(1).select('rect.box').attr('width')).toBe('75');
             });
         });
@@ -291,7 +291,7 @@ describe('dc.BoxPlot', () => {
         });
     });
 
-    function box (n) {
+    function box(n) {
         const nthBox = d3.select(chart.selectAll('g.box').nodes()[n]);
         nthBox.boxText = function (i) {
             return d3.select(this.selectAll('text.box').nodes()[i]);
@@ -305,4 +305,3 @@ describe('dc.BoxPlot', () => {
         return nthBox;
     }
 });
-

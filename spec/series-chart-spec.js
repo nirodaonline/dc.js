@@ -1,12 +1,11 @@
 /* global appendChartID */
 describe('dc.seriesChart', () => {
-
     let chart;
     const colorRows = [
-        {colData: 1, rowData: 1, colorData: 1},
-        {colData: 1, rowData: 2, colorData: 2},
-        {colData: 2, rowData: 1, colorData: 3},
-        {colData: 2, rowData: 2, colorData: 4}
+        { colData: 1, rowData: 1, colorData: 1 },
+        { colData: 1, rowData: 2, colorData: 2 },
+        { colData: 2, rowData: 1, colorData: 3 },
+        { colData: 2, rowData: 2, colorData: 4 },
     ];
     let colorData;
 
@@ -22,14 +21,14 @@ describe('dc.seriesChart', () => {
         chart
             .width(210)
             .height(210)
-            .x(d3.scaleLinear().domain([1,2]))
+            .x(d3.scaleLinear().domain([1, 2]))
             .dimension(dimensionColorData)
             .group(groupColorData)
             .ordinalColors(['#000001', '#000002'])
             .seriesAccessor(d => +d.key[0])
             .keyAccessor(d => +d.key[1])
-            .valueAccessor(d => +d.value )
-            .childOptions({renderArea: true, dashStyle: [3, 1, 1]})
+            .valueAccessor(d => +d.value)
+            .childOptions({ renderArea: true, dashStyle: [3, 1, 1] })
             .transitionDuration(0);
     });
 
@@ -72,9 +71,7 @@ describe('dc.seriesChart', () => {
 
     describe('series sorting', () => {
         beforeEach(() => {
-            chart
-                .seriesSort(d3.descending)
-                .render();
+            chart.seriesSort(d3.descending).render();
         });
 
         it('should order lineCharts in the order specified', () => {
@@ -94,8 +91,12 @@ describe('dc.seriesChart', () => {
             const lines = chart.selectAll('path.line');
             const areas = chart.selectAll('path.area');
 
-            expect(d3.select(lines.nodes()[0]).attr('stroke-dasharray')).toEqualIntOrPixelList('3,1,1');
-            expect(d3.select(lines.nodes()[1]).attr('stroke-dasharray')).toEqualIntOrPixelList('3,1,1');
+            expect(d3.select(lines.nodes()[0]).attr('stroke-dasharray')).toEqualIntOrPixelList(
+                '3,1,1'
+            );
+            expect(d3.select(lines.nodes()[1]).attr('stroke-dasharray')).toEqualIntOrPixelList(
+                '3,1,1'
+            );
 
             expect(d3.select(areas.nodes()[0]).attr('fill')).toMatch(/#000001/i);
             expect(d3.select(areas.nodes()[1]).attr('fill')).toMatch(/#000002/i);
@@ -104,12 +105,12 @@ describe('dc.seriesChart', () => {
 
     describe('#redraw', () => {
         const colorRows2 = [
-            {colData: 1, rowData: 1, colorData: 1},
-            {colData: 1, rowData: 2, colorData: 2},
-            {colData: 2, rowData: 1, colorData: 3},
-            {colData: 2, rowData: 2, colorData: 4},
-            {colData: 3, rowData: 1, colorData: 5},
-            {colData: 3, rowData: 2, colorData: 6}
+            { colData: 1, rowData: 1, colorData: 1 },
+            { colData: 1, rowData: 2, colorData: 2 },
+            { colData: 2, rowData: 1, colorData: 3 },
+            { colData: 2, rowData: 2, colorData: 4 },
+            { colData: 3, rowData: 1, colorData: 5 },
+            { colData: 3, rowData: 2, colorData: 6 },
         ];
         let colorData2;
         beforeEach(() => {

@@ -12,9 +12,7 @@ describe('dc.textFilterWidget', () => {
 
         id = 'input-filter';
         appendChartID(id);
-        chart = new dc.TextFilterWidget(`#${id}`)
-            .dimension(dimension)
-            .group(group);
+        chart = new dc.TextFilterWidget(`#${id}`).dimension(dimension).group(group);
         chart.render();
     });
 
@@ -28,7 +26,7 @@ describe('dc.textFilterWidget', () => {
         it('sets an input field', () => {
             expect(chart.selectAll('input').nodes().length).toEqual(1);
         });
-        it('doesn\'t filter by default', () => {
+        it("doesn't filter by default", () => {
             expect(chart.dimension().top(1000).length).toEqual(10);
         });
     });
@@ -74,7 +72,6 @@ describe('dc.textFilterWidget', () => {
             mockTyping('LiFo'); // Will match California
             expect(chart.dimension().top(1000).length).toEqual(3);
         });
-
     });
 
     afterEach(() => {

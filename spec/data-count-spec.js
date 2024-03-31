@@ -8,7 +8,7 @@ describe('dc.dataCount', () => {
         countryDimension = data.dimension(d => d.countrycode);
         countryDimension.filter('CA');
     });
-    function buildChart (id) {
+    function buildChart(id) {
         const dataCount = new dc.DataCount(`#${id}`)
             .transitionDuration(0)
             .dimension(data)
@@ -74,7 +74,10 @@ describe('dc.dataCount', () => {
             div.append('span').attr('class', 'filter-count');
             div.append('span').attr('class', 'total-count');
             chart = buildChart(id);
-            chart.html({some: '%filter-count selected from %total-count',all: 'All Records Selected'});
+            chart.html({
+                some: '%filter-count selected from %total-count',
+                all: 'All Records Selected',
+            });
             chart.redraw();
         });
         it('should generate something', () => {
@@ -108,7 +111,7 @@ describe('dc.dataCount', () => {
             div.append('span').attr('class', 'filter-count');
             div.append('span').attr('class', 'total-count');
             chart = buildChart(id);
-            chart.html({some: '%filter-count selected from %total-count'});
+            chart.html({ some: '%filter-count selected from %total-count' });
             chart.redraw();
         });
         it('should fill the element replacing %filter-count and %total-count', () => {
@@ -136,7 +139,7 @@ describe('dc.dataCount', () => {
             div.append('span').attr('class', 'filter-count');
             div.append('span').attr('class', 'total-count');
             chart = buildChart(id);
-            chart.html({all: 'All Records Selected'});
+            chart.html({ all: 'All Records Selected' });
             chart.redraw();
         });
         it('should fill in the total count', () => {
@@ -186,5 +189,4 @@ describe('dc.dataCount', () => {
             countryDimension.filterAll();
         });
     });
-
 });
