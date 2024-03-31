@@ -1,35 +1,17 @@
-import { IFilterStorage } from '../core/index.js';
-import { FilterHandler } from './filter-handler.js';
+import { BaseDataAdapter } from './base-data-adapter.js';
+import { ISimpleDataAdapterConf } from './i-simple-data-adapter-conf.js';
 
-export interface IFilterStorageConf {
-    readonly filterStorage?: IFilterStorage;
-    readonly chartId?: string;
-    readonly dimId?: string;
-    readonly primaryChart?: boolean;
-    readonly onFiltersChanged?: (filters: any[]) => void;
-}
-
-export class FilterStorageHelper extends FilterHandler {
+export class FilterStorageHelper extends BaseDataAdapter {
     private _listenerRegToken: any;
-    protected _conf: IFilterStorageConf;
 
-    constructor(conf: IFilterStorageConf) {
-        super();
-        this._conf = conf;
-    }
-
-    public conf(): IFilterStorageConf {
-        return this._conf;
-    }
-
-    public configure(conf: IFilterStorageConf): this {
-        this._conf = { ...this._conf, ...conf };
+    public configure(conf: ISimpleDataAdapterConf): this {
+        super.configure(conf);
         this._ensureListenerRegistered();
         return this;
     }
 
     protected _storageKey(): any {
-        return this.dimId;
+        return this.providerBehavior.storageKey(this);
     }
 
     get dimId(): string {

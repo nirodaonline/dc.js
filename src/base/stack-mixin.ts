@@ -5,7 +5,7 @@ import { add, subtract } from '../core/utils.js';
 import { CoordinateGridMixin } from './coordinate-grid-mixin.js';
 import { ChartGroupType, ChartParentType, LegendItem, TitleAccessor } from '../core/types.js';
 import { IStackMixinConf } from './i-stack-mixin-conf.js';
-import { CFMultiAdapter } from '../data/c-f-multi-adapter.js';
+import { MultiDataAdapter } from '../data/multi-data-adapter.js';
 
 /**
  * Stack Mixin is an mixin that provides cross-chart support of stackability using d3.stack.
@@ -19,7 +19,7 @@ export class StackMixin extends CoordinateGridMixin {
     private _stackLayout: Stack<any, { [p: string]: number }, string>;
     private _hiddenStacks;
 
-    protected _dataProvider: CFMultiAdapter;
+    protected _dataProvider: MultiDataAdapter;
 
     /**
      * Create a new instance.
@@ -35,7 +35,7 @@ export class StackMixin extends CoordinateGridMixin {
             evadeDomainFilter: false,
         });
 
-        this.dataProvider(new CFMultiAdapter());
+        this.dataProvider(new MultiDataAdapter());
 
         this._stackLayout = stack();
 
@@ -62,7 +62,7 @@ export class StackMixin extends CoordinateGridMixin {
      *
      * @see {@link BaseMixin.dataProvider}.
      */
-    public dataProvider(): CFMultiAdapter;
+    public dataProvider(): MultiDataAdapter;
     public dataProvider(dataProvider): this;
     public dataProvider(dataProvider?) {
         if (!arguments.length) {

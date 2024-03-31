@@ -1,7 +1,7 @@
 import { MinimalCFDimension, MinimalCFGroup } from '../core/index.js';
-import { ICFHelper } from './i-c-f-helper.js';
+import { IDataProviderBehavior } from './i-data-provider-behavior.js';
 
-export const cfHelper: ICFHelper = {
+export const cfDataProviderBehavior: IDataProviderBehavior = {
     applyFilters: (dimension: MinimalCFDimension, filters: any[]) => {
         if (!(dimension && dimension.filter)) {
             return;
@@ -40,7 +40,7 @@ export const cfHelper: ICFHelper = {
         }
     },
 
-    getGroupings: (dimension: any, group: MinimalCFGroup) => {
+    getGroupings: (dimension: any, group: MinimalCFGroup, chartId: string) => {
         return group.all();
     },
 };

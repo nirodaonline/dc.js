@@ -13,7 +13,7 @@ import {
     SVGGElementSelection,
 } from '../core/types.js';
 import { IRowChartConf } from './i-row-chart-conf.js';
-import { CFDataCapHelper } from '../data/c-f-data-cap-helper.js';
+import { SimpleDataCapHelper } from '../data/simple-data-cap-helper.js';
 
 /**
  * Concrete row chart implementation.
@@ -64,7 +64,7 @@ export class RowChart extends ColorMixin(MarginMixin) {
             elasticX: undefined,
         });
 
-        this.dataProvider(new CFDataCapHelper());
+        this.dataProvider(new SimpleDataCapHelper());
 
         this._g = undefined;
 

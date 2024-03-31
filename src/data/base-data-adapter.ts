@@ -1,5 +1,32 @@
-export class FilterHandler {
+import { ISimpleDataAdapterConf } from './i-simple-data-adapter-conf.js';
+import { IDataProviderBehavior } from './i-data-provider-behavior.js';
+import { cfDataProviderBehavior } from './cf-data-provider-behavior.js';
+
+export class BaseDataAdapter {
+    protected _conf: ISimpleDataAdapterConf;
+
     private _filters: any[] = []; // TODO: find better types
+
+    constructor(conf: ISimpleDataAdapterConf) {
+        this._conf = {
+            shareFilters: true,
+            dataProviderBehavior: cfDataProviderBehavior,
+            ...conf,
+        };
+    }
+    public configure(conf: ISimpleDataAdapterConf): this {
+        this._conf = { ...this._conf, ...conf };
+        return this;
+    }
+
+    public conf(): ISimpleDataAdapterConf {
+        return this._conf;
+    }
+
+    get providerBehavior(): IDataProviderBehavior {
+        return this._conf.dataProviderBehavior;
+    }
+
     get filters(): any[] {
         return this._filters;
     }
@@ -23,7 +50,7 @@ export class FilterHandler {
      * Crossfilter version will apply the filter onto the corresponding dimension.
      */
     protected applyFilters() {
-        // do nothing at this level, derived classes will actually implement it
+        this.providerBehavior.applyFilters(this._conf.dimension, this.filters);
     }
 
     /**

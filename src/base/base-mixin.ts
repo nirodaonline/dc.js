@@ -12,7 +12,7 @@ import { InvalidStateException } from '../core/invalid-state-exception.js';
 import { BadArgumentException } from '../core/bad-argument-exception.js';
 import { CFGrouping, ChartGroupType, ChartParentType, LegendItem, SizeT } from '../core/types.js';
 import { IBaseMixinConf } from './i-base-mixin-conf.js';
-import { CFSimpleAdapter } from '../data/c-f-simple-adapter.js';
+import { SimpleDataAdapter } from '../data/index.js';
 import { IChartGroup } from '../core/i-chart-group.js';
 import { max } from 'd3-array';
 
@@ -43,7 +43,7 @@ export class BaseMixin {
     /**
      * @hidden
      */
-    protected _dataProvider: CFSimpleAdapter;
+    protected _dataProvider: SimpleDataAdapter;
 
     /**
      * Create a new chart
@@ -74,7 +74,7 @@ export class BaseMixin {
             title: d => `${this._conf.keyAccessor(d)}: ${d._value}`,
         });
 
-        this.dataProvider(new CFSimpleAdapter());
+        this.dataProvider(new SimpleDataAdapter());
 
         this._calculatedWidth = undefined;
         this._calculatedHeight = undefined;
@@ -129,7 +129,7 @@ export class BaseMixin {
     /**
      * TODO add details
      */
-    public dataProvider(): CFSimpleAdapter;
+    public dataProvider(): SimpleDataAdapter;
     public dataProvider(dataProvider): this;
     public dataProvider(dataProvider?) {
         if (!arguments.length) {

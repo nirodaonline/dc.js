@@ -1,5 +1,6 @@
 import { MinimalCFGroup, ValueAccessor } from '../core/types.js';
-import { CFSimpleAdapter, ICFSimpleAdapterConf } from './c-f-simple-adapter.js';
+import { SimpleDataAdapter } from './simple-data-adapter.js';
+import { ISimpleDataAdapterConf } from './i-simple-data-adapter-conf.js';
 
 export interface LayerSpec {
     name?: string;
@@ -7,11 +8,11 @@ export interface LayerSpec {
     valueAccessor?: ValueAccessor;
 }
 
-export interface ICFMultiAdapterConf extends ICFSimpleAdapterConf {
+export interface ICFMultiAdapterConf extends ISimpleDataAdapterConf {
     readonly layers?: LayerSpec[];
 }
 
-export class CFMultiAdapter extends CFSimpleAdapter {
+export class MultiDataAdapter extends SimpleDataAdapter {
     protected _conf: ICFMultiAdapterConf;
 
     constructor(conf: ICFMultiAdapterConf = {}) {
@@ -34,8 +35,14 @@ export class CFMultiAdapter extends CFSimpleAdapter {
     public data(): any {
         // Two level defensive copy
         return this.layers().map(layer => {
-            const valueAccessor = layer.valueAccessor || this._conf.valueAccessor;
-            const rawData = this._getData(this._conf.dimension, layer.group, valueAccessor);
+            const { chartId, valueAccessor: primaryValueAccessor, dimension } = this._conf;
+            const valueAccessor = layer.valueAccessor || primaryValueAccessor;
+            const rawData = this._getData({
+                dimension,
+                group: layer.group,
+                chartId,
+                valueAccessor,
+            });
 
             return { name: layer.name, rawData };
         });

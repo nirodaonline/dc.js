@@ -1,7 +1,7 @@
 import { Constructor } from '../../core/types.js';
 import { BaseMixinExt } from './base-mixin.js';
 import { BaseMixin as BaseMixinNeo } from '../../base/base-mixin.js';
-import { CFDataCapHelper } from '../../data/c-f-data-cap-helper.js';
+import { SimpleDataCapHelper } from '../../data/index.js';
 
 class Intermediate extends BaseMixinExt(BaseMixinNeo) {}
 
@@ -10,7 +10,7 @@ export function CapMixinExt<TBase extends Constructor<Intermediate>>(Base: TBase
         constructor(...args: any[]) {
             super(...args);
 
-            this.dataProvider(new CFDataCapHelper());
+            this.dataProvider(new SimpleDataCapHelper());
         }
 
         /**

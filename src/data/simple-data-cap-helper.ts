@@ -1,15 +1,16 @@
-import { CFSimpleAdapter, ICFSimpleAdapterConf } from './c-f-simple-adapter.js';
+import { SimpleDataAdapter } from './simple-data-adapter.js';
 import { sum } from 'd3-array';
 import { sortBy } from '../core/utils.js';
+import { ISimpleDataAdapterConf } from './i-simple-data-adapter-conf.js';
 
-export interface ICFDataCapHelperConf extends ICFSimpleAdapterConf {
+export interface ICFDataCapHelperConf extends ISimpleDataAdapterConf {
     readonly othersGrouper?: (topItems, restItems) => any;
     readonly othersLabel?: string;
     readonly takeFront?: boolean;
     readonly cap?: number;
 }
 
-export class CFDataCapHelper extends CFSimpleAdapter {
+export class SimpleDataCapHelper extends SimpleDataAdapter {
     protected _conf: ICFDataCapHelperConf;
     private _restKeys: string[];
 

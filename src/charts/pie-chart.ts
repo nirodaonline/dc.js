@@ -8,7 +8,7 @@ import { BaseMixin } from '../base/base-mixin.js';
 import { transition } from '../core/core.js';
 import { ChartGroupType, ChartParentType, LegendItem, SVGGElementSelection } from '../core/types.js';
 import { IPieChartConf } from './i-pie-chart-conf.js';
-import { CFDataCapHelper } from '../data/c-f-data-cap-helper.js';
+import { SimpleDataCapHelper } from '../data/index.js';
 
 const DEFAULT_MIN_ANGLE_FOR_LABEL = 0.5;
 
@@ -67,7 +67,7 @@ export class PieChart extends ColorMixin(BaseMixin) {
             drawPaths: false,
         });
 
-        this.dataProvider(new CFDataCapHelper());
+        this.dataProvider(new SimpleDataCapHelper());
 
         this._sliceCssClass = 'pie-slice';
         this._labelCssClass = 'pie-label';
