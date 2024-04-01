@@ -10,7 +10,6 @@ export class BaseDataAdapter {
     constructor(conf: ISimpleDataAdapterConf) {
         this._conf = {
             shareFilters: true,
-            dataProviderBehavior: cfDataProviderBehavior,
             ...conf,
         };
     }

@@ -2,6 +2,7 @@ import { FilterStorage } from './filter-storage.js';
 import { IFilterStorage } from './i-filter-storage.js';
 import { IChartGroup } from './i-chart-group.js';
 import { IMinimalChart } from './i-minimal-chart.js';
+import { cfDataProviderBehavior, IDataProviderBehavior } from '../data/index.js';
 
 /**
  * A chart group often corresponds to a set of linked charts.
@@ -33,6 +34,15 @@ export class ChartGroup implements IChartGroup {
      * @category Ninja
      */
     public filterStorage: IFilterStorage;
+
+    /**
+     * From dc-v5, there is first-class support for data sources other than CrossFilter.
+     * The data provider specific behavior is extracted so that an alternate implementation
+     * will allow using different back-ends, including remote data sources.
+     *
+     * @category Ninja
+     */
+    public dataProviderBehavior: IDataProviderBehavior;
 
     /**
      * This callback is invoked after {@linkcode redrawAll} and {@linkcode renderAll}.
@@ -70,9 +80,10 @@ export class ChartGroup implements IChartGroup {
     /**
      * Create a new instance. Please note it does not take a name as parameter.
      */
-    constructor() {
+    constructor(dataProviderBehavior = cfDataProviderBehavior) {
         this._charts = [];
         this.filterStorage = new FilterStorage();
+        this.dataProviderBehavior = dataProviderBehavior;
     }
 
     /**
