@@ -9,10 +9,6 @@ export interface IFilterListenerParams {
     applyFilters: (filters) => void;
 }
 
-export interface ISerializeOpts {
-    includeStorageKey?: boolean;
-}
-
 export interface IFilterStorage {
     setFiltersFor(storageKey: any, filters);
     getFiltersFor(storageKey: any);
@@ -20,6 +16,6 @@ export interface IFilterStorage {
     deRegisterFilterListener(storageKey: any, listner: any): void;
     notifyListeners(storageKey: any, filters): void;
     deRegisterAll(): void;
-    serialize(opts?: ISerializeOpts): ISerializedFilters[];
+    serialize(): ISerializedFilters[];
     restore(state: object): void;
 }

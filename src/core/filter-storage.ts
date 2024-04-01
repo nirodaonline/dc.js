@@ -1,4 +1,4 @@
-import { IFilterListenerParams, IFilterStorage, ISerializeOpts } from './i-filter-storage.js';
+import { IFilterListenerParams, IFilterStorage } from './i-filter-storage.js';
 import { IFilter } from './filters/i-filter.js';
 import { filterFactory } from './filters/filter-factory.js';
 import { ISerializedFilters } from './i-serialized-filters.js';
@@ -100,7 +100,7 @@ export class FilterStorage implements IFilterStorage {
         this.setFiltersAndNotify(storageKey, filters);
     }
 
-    public serialize({ includeStorageKey }: ISerializeOpts = {}): ISerializedFilters[] {
+    public serialize(): ISerializedFilters[] {
         // Include items that have active filters
         // In case of Composite charts, include only the parent chart
         return Array.from(this._listenerChains.values())
@@ -111,15 +111,11 @@ export class FilterStorage implements IFilterStorage {
                 if (listener) {
                     const filters = this._filters.get(listener.storageKey);
                     if (filters && filters.length > 0) {
-                        const entry = this._serializeFilters(
-                            listener.dimId,
-                            listener.dimLabel,
-                            filters
+                        return this._serializeFilters(
+                          listener.dimId,
+                          listener.dimLabel,
+                          filters
                         );
-                        if (includeStorageKey) {
-                            entry.storageKey = listener.storageKey;
-                        }
-                        return entry;
                     }
                 }
                 return undefined;
