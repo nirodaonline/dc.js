@@ -92,7 +92,10 @@ export class FilterStorage implements IFilterStorage {
         this.notifyListeners(storageKey, filters);
     }
 
-    public deserializeFiltersSetAndNotify(storageKey: any, entry: { filterType: any; values: any[]; }) {
+    public deserializeFiltersSetAndNotify(
+        storageKey: any,
+        entry: { filterType: any; values: any[] }
+    ) {
         const filters = this._deSerializeFilters(entry.filterType, entry.values);
         this.setFiltersAndNotify(storageKey, filters);
     }
@@ -108,7 +111,11 @@ export class FilterStorage implements IFilterStorage {
                 if (listener) {
                     const filters = this._filters.get(listener.storageKey);
                     if (filters && filters.length > 0) {
-                        const entry = this._serializeFilters(listener.dimId, filters);
+                        const entry = this._serializeFilters(
+                            listener.dimId,
+                            listener.dimLabel,
+                            filters
+                        );
                         if (includeStorageKey) {
                             entry.storageKey = listener.storageKey;
                         }
@@ -150,10 +157,11 @@ export class FilterStorage implements IFilterStorage {
         }
     }
 
-    private _serializeFilters(dimId: string, filters: any[]): ISerializedFilters {
+    private _serializeFilters(dimId: string, dimLabel: string, filters: any[]): ISerializedFilters {
         if (typeof filters[0].isFiltered !== 'function') {
             return {
                 dimId,
+                dimLabel,
                 filterType: 'Simple',
                 values: [...filters], // defensively clone
             };
@@ -162,6 +170,7 @@ export class FilterStorage implements IFilterStorage {
         const filtersWithType: IFilter[] = filters;
         return {
             dimId,
+            dimLabel,
             filterType: filtersWithType[0].filterType,
             values: filtersWithType.map(f => f.serialize()),
         };

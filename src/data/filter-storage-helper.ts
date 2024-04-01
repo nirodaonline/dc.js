@@ -15,7 +15,11 @@ export class FilterStorageHelper extends BaseDataAdapter {
     }
 
     get dimId(): string {
-        return this._conf.dimId || this._conf.chartId;
+        return this._conf.dimension?.dimId || this._conf.dimId || this._conf.chartId;
+    }
+
+    get dimLabel(): string {
+        return this._conf.dimension?.dimLabel || this._conf.dimLabel || this.dimId;
     }
 
     private _ensureListenerRegistered() {
@@ -41,6 +45,7 @@ export class FilterStorageHelper extends BaseDataAdapter {
             storageKey,
             onFiltersChanged: this._conf.onFiltersChanged,
             dimId: this.dimId,
+            dimLabel: this.dimLabel,
             primaryChart: this._conf.primaryChart,
             applyFilters: () => this.applyFilters(),
         });

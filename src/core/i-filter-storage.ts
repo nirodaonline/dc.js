@@ -4,6 +4,7 @@ export interface IFilterListenerParams {
     storageKey: any;
     onFiltersChanged: (filters) => void;
     dimId: string;
+    dimLabel: string;
     primaryChart: boolean;
     applyFilters: (filters) => void;
 }

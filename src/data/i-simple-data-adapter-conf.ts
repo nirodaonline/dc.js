@@ -5,6 +5,7 @@ import { IDataProviderBehavior } from './i-data-provider-behavior.js';
 export interface ISimpleDataAdapterConf {
     readonly chartId?: string;
     readonly dimId?: string;
+    readonly dimLabel?: string;
     readonly dimension?: any;
     readonly shareFilters?: boolean;
     readonly group?: any;
