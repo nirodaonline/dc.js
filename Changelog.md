@@ -1,6 +1,7 @@
 ## 5.0.0-alpha3
 * Rearrange Data Classes to better support Remote Data classes.
-* Use dimId instead of dimName for FilterStorage.
+* Extract and externalize CrossFilter specific behavior. This should allow easier to remote data.
+* Use dimId and dimLabel in DataAdapters - helps in serialization and creating current-filters widget.
 
 ## 5.0.0-alpha2
 * Change minimum chart size from 200x200to 25x25.
